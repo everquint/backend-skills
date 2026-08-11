@@ -1,0 +1,62 @@
+name: Release
+
+on:
+    push:
+        tags:
+            - 'v*.*.*'
+
+concurrency:
+    group: release-${{ github.ref }}
+    cancel-in-progress: false
+
+permissions:
+    contents: write
+
+jobs:
+    release:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: npm
+
+            - run: npm ci
+
+            - name: Validate skill repository
+              run: npm run validate
+
+            - name: Verify release metadata
+              shell: bash
+              run: |
+                  tag="${GITHUB_REF_NAME}"
+                  if [[ "${tag}" != v* ]]; then
+                      echo "Invalid semantic version tag: ${tag}" >&2
+                      exit 1
+                  fi
+                  if [[ "${tag}" == "v0.0.0" ]]; then
+                      echo "v0.0.0 is an unpublished development sentinel" >&2
+                      exit 1
+                  fi
+                  if ! npx --no-install semver "${tag#v}" >/dev/null; then
+                      echo "Invalid semantic version tag: ${tag}" >&2
+                      exit 1
+                  fi
+                  package_version="$(node --print "require('./package.json').version")"
+                  if [[ "${tag}" != "v${package_version}" ]]; then
+                      echo "Tag ${tag} does not match package version ${package_version}" >&2
+                      exit 1
+                  fi
+                  if ! grep --fixed-strings --quiet "## ${package_version}" CHANGELOG.md; then
+                      echo "CHANGELOG.md has no release heading for ${package_version}" >&2
+                      exit 1
+                  fi
+
+            - name: Publish GitHub release
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: gh release create "${GITHUB_REF_NAME}" --verify-tag --generate-notes
