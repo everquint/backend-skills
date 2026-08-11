@@ -1,0 +1,4 @@
+interface:
+    display_name: 'Ever Quint Backend Standards'
+    short_description: 'Build secure, clean, language-neutral backends'
+    default_prompt: 'Use $everquint-backend-skill to implement this backend change using Ever Quint architecture, security, testing, documentation, and release standards.'
