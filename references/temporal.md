@@ -15,10 +15,10 @@
 ## Workflow and activity boundaries
 
 - Keep durable orchestration, timers, signals, updates, queries, retries, and compensation in workflows.
-- Put every side effect in an activity. Activities call `logics`; they never access ORM or services directly.
-- Keep business rules and authorization in `logics`. A workflow coordinates those rules without becoming a second domain implementation.
+- Put every side effect in an activity. Activities call `logic`; they never access ORM or services directly.
+- Keep business rules and authorization in `logic`. A workflow coordinates those rules without becoming a second domain implementation.
 - Make activities idempotent or protect them with an idempotency key derived from stable workflow operation identity.
-- Group workflows by feature under `src/api/workflows` and keep workers and registration in explicitly named bootstrap files.
+- Group workflows by feature under `src/workflows` and keep workers and registration in explicitly named bootstrap files.
 
 ## Determinism
 
@@ -79,7 +79,7 @@ Temporal limits vary by service, deployment configuration, namespace, SDK, data 
 
 ## Security, observability, and operations
 
-- Propagate verified identity and tenant context as minimal immutable data; reauthorize in `logics` before sensitive activities.
+- Propagate verified identity and tenant context as minimal immutable data; reauthorize in `logic` before sensitive activities.
 - Restrict namespace, task-queue, worker, visibility, and payload-codec credentials by least privilege.
 - Instrument workflows and activities through OpenTelemetry using replay-safe SDK integrations.
 - Monitor task backlog, schedule-to-start latency, failures, retries, timeouts, heartbeat loss, stuck executions, payload headroom, history growth, and worker availability.

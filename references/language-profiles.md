@@ -10,6 +10,7 @@
 
 ## Shared rules
 
+- Keep authored application code under `src`, with `logic`, `orm`, `services`, `restapi`, `mcp`, and `workflows` as sibling modules when present. Keep `debug`, `docs`, and opt-in `terraform` at the repository root.
 - Pin the runtime, package manager, formatter, linter, static analyzer, test runner, and coverage tools through the language's normal reproducible mechanism.
 - Run formatting, linting, static or type checks, tests, architecture checks, and coverage locally and in CI with warnings treated as failures.
 - Use four spaces unless the language formatter requires otherwise; Go uses `gofmt` tabs.
@@ -18,6 +19,32 @@
 - Add no second tool that owns the same concern without a documented gap and ADR.
 
 ## JavaScript and TypeScript
+
+Use this TypeScript project shape, adding only modules the project needs:
+
+```text
+project/
+├── src/
+│   ├── logic/
+│   ├── orm/
+│   ├── services/
+│   ├── restapi/
+│   ├── mcp/
+│   ├── workflows/
+│   └── dockerfiles/
+├── dist/                   # generated JavaScript; never authored
+│   ├── logic/
+│   ├── orm/
+│   ├── services/
+│   ├── restapi/
+│   ├── mcp/
+│   └── workflows/
+├── debug/
+├── docs/
+└── terraform/              # only when explicitly requested
+```
+
+Compile TypeScript from `src` into the corresponding path under `dist`: `src/logic` becomes `dist/logic`, `src/restapi` becomes `dist/restapi`, and so on. Never edit or commit generated `dist` output unless the repository's distribution model explicitly requires committed build artifacts.
 
 Required profile:
 
@@ -36,6 +63,8 @@ Required profile:
 
 ## Go
 
+Use the shared project shape directly. Go builds binaries rather than a mirrored JavaScript tree, so do not create `dist/logic`, `dist/restapi`, or `dist/mcp`. Put produced binaries in the repository's ignored build-output directory or release staging area.
+
 Required profile:
 
 - `gofmt` for formatting; accept its tab indentation.
@@ -52,6 +81,8 @@ Required profile:
 - Keep generated mocks and code visibly generated and out of authored coverage, while testing the behavior that consumes them.
 
 ## Python
+
+Use the shared project shape directly. Do not create a mirrored `dist` source tree. Treat wheels, source distributions, bytecode, and other package output as generated build artifacts.
 
 Required profile:
 

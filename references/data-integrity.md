@@ -12,8 +12,8 @@
 
 ## Ownership and transactions
 
-- Keep schema definitions, queries, mappings, repositories, transactions, and migration mechanics in `src/api/orm`.
-- Initiate business operations through `logics`. A logic method defines the business unit of work and asks ORM infrastructure to execute its persistence steps transactionally.
+- Keep schema definitions, queries, mappings, repositories, transactions, and migration mechanics in `src/orm`.
+- Initiate business operations through `logic`. A logic method defines the business unit of work and asks ORM infrastructure to execute its persistence steps transactionally.
 - Keep business decisions out of ORM hooks, triggers, and migrations. Use database constraints for invariants the database can enforce reliably.
 - Make transaction scope explicit and as short as correctness allows. Never hold a transaction open across an avoidable remote service call.
 - When a business operation combines database state with an external side effect, use an outbox, workflow, or compensating design; a database transaction cannot make a remote API atomic.
@@ -46,7 +46,7 @@
 - Add an index for a measured query pattern, not by guessing; record the query plan for mission-critical or high-volume paths.
 - Bound connection pools against database capacity across all replicas, workers, jobs, migrations, and debug processes.
 - Set query and lock timeouts and expose slow-query telemetry without recording secret or personal values.
-- Treat cache keys, invalidation, TTL, and stampede protection as correctness decisions owned by `logics`; keep Redis mechanics in services.
+- Treat cache keys, invalidation, TTL, and stampede protection as correctness decisions owned by `logic`; keep Redis mechanics in services.
 
 ## Retention and deletion
 

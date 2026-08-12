@@ -12,9 +12,9 @@
 
 ## Terraform only when requested
 
-Do not create, propose, or scaffold Terraform merely because a project deploys infrastructure. Add `src/terraform` only when the user explicitly asks for Terraform or asks to change an existing Terraform implementation.
+Do not create, propose, or scaffold Terraform merely because a project deploys infrastructure. Add root `terraform` only when the user explicitly asks for Terraform or asks to change an existing Terraform implementation.
 
-Once Terraform is explicitly in scope, define and manage that infrastructure under `src/terraform`. Do not introduce Pulumi, CloudFormation, handwritten cloud scripts, or console-only resources into the Terraform-managed scope without an explicit approved exception and ADR.
+Once Terraform is explicitly in scope, define and manage that infrastructure under root `terraform`. Do not introduce Pulumi, CloudFormation, handwritten cloud scripts, or console-only resources into the Terraform-managed scope without an explicit approved exception and ADR.
 
 Keep infrastructure changes in the same repository and review process as the application version they support. Import existing managed resources into Terraform rather than leaving permanent undocumented infrastructure outside state.
 
@@ -23,7 +23,7 @@ Keep infrastructure changes in the same repository and review process as the app
 Use this starting shape and add only required modules and environments:
 
 ```text
-src/terraform/
+terraform/
 ├── modules/
 │   └── <module-name>/
 │       ├── main.tf

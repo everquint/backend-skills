@@ -12,7 +12,7 @@
 
 ## Consumer boundaries
 
-Treat REST, MCP, webhooks, queue consumers, event subscribers, scheduled jobs, and CLI commands as thin consumers of `logics`.
+Treat REST, MCP, webhooks, queue consumers, event subscribers, scheduled jobs, and CLI commands as thin consumers of `logic`.
 
 - Authenticate and parse the protocol at the boundary.
 - Validate the complete external shape before constructing domain input.
@@ -20,7 +20,7 @@ Treat REST, MCP, webhooks, queue consumers, event subscribers, scheduled jobs, a
 - Translate logic results and errors into the protocol contract.
 - Never import ORM, database clients, provider SDKs, or services.
 
-Add `src/api/events`, `src/api/webhooks`, `src/api/jobs`, or `src/api/cli` only when the project actually exposes that consumer. Group each by feature, use kebab-case, and keep `index` export-only.
+Add `src/events`, `src/webhooks`, `src/jobs`, or `src/cli` only when the project actually exposes that consumer. Group each by feature, follow the selected language's filename rules, and keep package entrypoints export-only where the language uses them.
 
 ## Validation and errors
 
@@ -48,7 +48,7 @@ Add `src/api/events`, `src/api/webhooks`, `src/api/jobs`, or `src/api/cli` only 
 - Keep tool names and response structures stable and document scopes, errors, pagination, side effects, and idempotency.
 - Require explicit confirmation or an approval flow for destructive or high-impact tools when the client interaction model supports it.
 - Follow [security.md](security.md) for OAuth 2.1, DCR, API keys, authorization, and tenant isolation.
-- Use MCP notifications and progress only for protocol state; business state remains owned by `logics`.
+- Use MCP notifications and progress only for protocol state; business state remains owned by `logic`.
 
 ## Events, queues, webhooks, jobs, and CLI
 

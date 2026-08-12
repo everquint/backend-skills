@@ -10,12 +10,12 @@
 
 ## Documentation structure
 
-Keep maintained documentation under `src/docs` and the changelog at the repository root:
+Keep maintained documentation under root `docs` and the changelog at the repository root:
 
 ```text
 repository/
 ├── CHANGELOG.md
-└── src/docs/
+└── docs/
     ├── index.md
     ├── adr/
     ├── architecture/
@@ -33,8 +33,8 @@ repository/
 - Use `features` for user-visible behavior, business rules, permissions, and important workflows, organized by feature.
 - Use `data` for data models, relationships, migrations, retention, and consistency rules.
 - Use `security` for the threat model, authentication, authorization, RBAC, tenant isolation, secrets, and incident considerations.
-- Use `operations` for deployment, configuration, OpenTelemetry collection and OpenObserve operation, service-level objectives, alerts, dashboards, backups, disaster recovery, and runbooks. Document Terraform there only when the user requested it and `src/terraform` exists.
-- Use `development` for local setup, testing, the `src/debug` adapters, contribution workflow, and coding conventions.
+- Use `operations` for deployment, configuration, OpenTelemetry collection and OpenObserve operation, service-level objectives, alerts, dashboards, backups, disaster recovery, and runbooks. Document Terraform there only when the user requested it and root `terraform` exists.
+- Use `development` for local setup, testing, the root `debug` adapters, contribution workflow, and coding conventions.
 - Create only documents that provide maintained value. Do not duplicate the same rule or contract in multiple files.
 
 ## Documentation-as-code rules
@@ -49,10 +49,10 @@ repository/
 
 ## Architecture decision records
 
-Keep ADRs in `src/docs/adr`:
+Keep ADRs in `docs/adr`:
 
 ```text
-src/docs/adr/
+docs/adr/
 ├── 0000-template.md
 ├── 0001-use-postgresql.md
 └── index.md

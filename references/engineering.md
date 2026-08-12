@@ -26,7 +26,7 @@
 - Write the minimum code that completely solves the requested problem.
 - Add no features, configurability, flexibility, or error cases that the requirement does not need.
 - Avoid abstractions for a single use. Refactor when a second real use or proven variation appears.
-- Use OOP in `logics` without cargo-cult interfaces, inheritance, factories, or strategies.
+- Use OOP in `logic` without cargo-cult interfaces, inheritance, factories, or strategies.
 - Prefer clear code over compressed or clever code.
 - If an implementation is much longer than the behavior warrants, simplify it before delivery.
 

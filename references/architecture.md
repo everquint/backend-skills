@@ -14,41 +14,40 @@
 
 ## Canonical repository shape
 
-Use `src` as the source root. Use `src/api` as the backend application root, not as a synonym for HTTP:
+Use `src` as the application source root. Keep business logic, persistence, integrations, and protocol consumers as siblings:
 
 ```text
 repository/
 ├── CHANGELOG.md
-└── src/
-    ├── api/
-    │   ├── logics/
-    │   ├── orm/
-    │   ├── services/
-    │   ├── rest/
-    │   ├── mcp/
-    │   ├── workflows/
-    │   ├── tests/
-    │   └── index.ts
-    ├── debug/
-    ├── docs/
-    └── dockerfiles/
+├── src/
+│   ├── logic/
+│   ├── orm/
+│   ├── services/
+│   ├── restapi/
+│   ├── mcp/
+│   ├── workflows/
+│   ├── tests/
+│   └── dockerfiles/
+├── debug/
+├── docs/
+└── terraform/              # only when explicitly requested
 ```
 
-Add only directories required by the project. Add `src/terraform` only when the user explicitly requests Terraform; never scaffold it from a general backend or deployment request. Use `src/debug` only for the development adapters defined in [debugging.md](debugging.md): REST Swagger, MCP Inspector, and direct Temporal workflow execution without a Temporal server. Keep every `index.js`, `index.ts`, or language-equivalent package entrypoint limited to exports. Put startup, registration, wiring, and side effects in explicitly named files.
+Add only directories required by the project. Add root `terraform` only when the user explicitly requests Terraform; never scaffold it from a general backend or deployment request. Use root `debug` only for the development adapters defined in [debugging.md](debugging.md): REST Swagger, MCP Inspector, and direct Temporal workflow execution without a Temporal server. Keep every `index.js`, `index.ts`, `__init__.py`, or language-equivalent package entrypoint limited to exports where the language uses such files. Put startup, registration, wiring, and side effects in explicitly named files. Do not invent an `index` file for Go.
 
 ## Dependency rules
 
 Enforce this direction:
 
 ```text
-rest ───────┐
-mcp ────────┼──> logics ──┬──> orm
-workflows ──┘              └──> services
+restapi ────┐
+mcp ────────┼──> logic ──┬──> orm
+workflows ──┘            └──> services
 ```
 
-- Put all application and business behavior in `logics`.
-- Allow only `logics` to query or mutate `orm`.
-- Allow only `logics` to call external integrations in `services`.
+- Put all application and business behavior in `logic`.
+- Allow only `logic` to query or mutate `orm`.
+- Allow only `logic` to call external integrations in `services`.
 - Forbid REST, MCP, workflows, activities, scheduled jobs, webhooks, and CLI consumers from accessing ORM models, database clients, provider SDKs, or services directly.
 - Add or reuse a logic method whenever a consumer needs data or an external action. Do not create convenience bypasses.
 - Keep ORM and services unaware of REST, MCP, and workflows.
@@ -58,20 +57,14 @@ workflows ──┘              └──> services
 
 Make the entire public logic layer object-oriented. Do not export standalone business functions.
 
-Use plural classes for collection-level operations and singular classes for one-record behavior:
+Use plural class or type names for collection-level operations and singular class or type names for one-record behavior. Map the same domain structure to the selected language instead of treating the TypeScript filenames as universal:
 
-```text
-src/api/logics/projects/
-├── projects.ts              # class Projects
-├── project/
-│   ├── project.ts           # class Project
-│   ├── project-members/
-│   │   ├── project-members.ts  # class ProjectMembers
-│   │   ├── project-member.ts   # class ProjectMember
-│   │   └── index.ts
-│   └── index.ts
-└── index.ts
-```
+| Domain role             | TypeScript                              | Python                                  | Go                                                                  |
+| ----------------------- | --------------------------------------- | --------------------------------------- | ------------------------------------------------------------------- |
+| Collection              | `src/logic/projects/projects.ts`        | `src/logic/projects/projects.py`        | `src/logic/projects/projects.go`                                    |
+| Entity                  | `src/logic/projects/project/project.ts` | `src/logic/projects/project/project.py` | `src/logic/projects/project.go` or a justified `project` subpackage |
+| Relationship collection | `project-members/project-members.ts`    | `project_members/project_members.py`    | `project_members.go` or a justified `projectmembers` subpackage     |
+| Package exports         | export-only `index.ts`                  | export-only `__init__.py`               | package exports; no index file                                      |
 
 Apply these rules:
 
@@ -93,7 +86,7 @@ Place a relationship module under the aggregate that owns its lifecycle. For exa
 
 Allow reverse navigation only for a real use case:
 
-```ts
+```typescript
 const user = new User('user-id');
 const projects = await user.projects.list();
 ```
@@ -102,7 +95,7 @@ Make `user.projects` a thin facade that delegates to the canonical project-membe
 
 ## ORM and stored naming
 
-Put Drizzle, Mongoose, or equivalent persistence definitions and mechanics under `src/api/orm`.
+Put Drizzle, Mongoose, or the selected language's equivalent persistence definitions and mechanics under `src/orm`.
 
 - Use plural snake_case table and collection names: `projects`, `users`, `project_members`.
 - Use snake_case stored fields and columns: `project_id`, `created_at`.
@@ -113,23 +106,24 @@ Put Drizzle, Mongoose, or equivalent persistence definitions and mechanics under
 
 ## Services
 
-Put every non-database external connection under a provider-specific `src/api/services/<service-name>` directory:
+Put every non-database external connection under a provider-specific `src/services/<service-name>` directory:
 
 ```text
-src/api/services/
+src/services/
 ├── redis/
 ├── valkey/
 ├── ses/
 ├── s3/
 ├── aws-secrets-manager/
 ├── openbao/
-├── open-telemetry/
-└── index.ts
+└── open-telemetry/
 ```
+
+Apply the selected language's directory and package naming rules. TypeScript may add an export-only `index.ts`; Python may add an export-only `__init__.py`; Go uses package exports without an index file.
 
 - Keep SDK clients, connection lifecycle, provider authentication, serialization, retries, and provider-specific error translation inside the service directory.
 - Forbid direct vendor SDK imports outside the owning service directory.
-- Keep business policy in `logics`; services implement integration capabilities only.
+- Keep business policy in `logic`; services implement integration capabilities only.
 - Add only providers the feature actually needs. Do not introduce speculative abstractions for hypothetical providers.
 - Keep OpenTelemetry SDK initialization, exporters, resource attributes, propagation, and shutdown under `services/open-telemetry`. Prefer exporting through an OpenTelemetry Collector to OpenObserve instead of importing an OpenObserve-specific SDK throughout the application.
 - Treat automatic protocol, ORM, and provider instrumentation as cross-cutting infrastructure, not a consumer bypass. REST, MCP, and workflows may be wrapped by shared instrumentation but must not call provider exporters or observability backends directly.
@@ -144,18 +138,13 @@ Treat REST and MCP as protocol adapters:
 - Translate logic results and errors into the protocol response.
 - Never duplicate business validation or query ORM/services directly.
 
-Place Temporal workflows under `src/api/workflows`, grouped by feature. Keep supporting activities beside the workflow unless genuinely shared.
+Place Temporal workflows under `src/workflows`, grouped by feature. Keep supporting activities beside the workflow unless genuinely shared.
 
-```text
-src/api/workflows/projects/project-onboarding/
-├── project-onboarding-workflow.ts
-├── project-onboarding-activities.ts
-└── index.ts
-```
+Group the workflow definition, its activities, and its optional package entrypoint under `src/workflows/<feature>/<workflow-name>`. Use the selected language's filenames and package conventions.
 
 - Put durable sequencing, timers, signals, retries, and compensation in workflows.
-- Put side effects in activities, but require activities to call `logics`; activities must not access ORM or services directly.
-- Keep domain validation and business decisions in `logics`.
+- Put side effects in activities, but require activities to call `logic`; activities must not access ORM or services directly.
+- Keep domain validation and business decisions in `logic`.
 
 ## Dockerfiles
 

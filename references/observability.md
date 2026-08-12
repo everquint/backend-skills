@@ -27,10 +27,10 @@ Do not add a vendor-specific tracing, metrics, or logging SDK when the vendor ac
 
 ## Placement and dependency boundaries
 
-Put OpenTelemetry setup under `src/api/services/open-telemetry`:
+Put OpenTelemetry setup under `src/services/open-telemetry`. This TypeScript example illustrates the ownership boundary; use the selected language profile for filenames and package entrypoints:
 
 ```text
-src/api/services/open-telemetry/
+src/services/open-telemetry/
 ├── open-telemetry.ts
 ├── open-telemetry-config.ts
 ├── open-telemetry.test.ts

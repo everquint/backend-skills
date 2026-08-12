@@ -15,7 +15,7 @@ Build backend changes around a single object-oriented business-logic core. Treat
 - Read [testing.md](references/testing.md) for every behavior-bearing change.
 - Read [security.md](references/security.md) when work touches authentication, authorization, RBAC, secrets, user or tenant isolation, MCP authorization, or other sensitive behavior.
 - Read [observability.md](references/observability.md) when instrumenting logs, metrics, traces, errors, health signals, correlation, telemetry export, alerts, dashboards, or OpenObserve.
-- Read [debugging.md](references/debugging.md) when creating or changing `src/debug`, a REST Swagger server, MCP Inspector integration, or direct Temporal workflow execution without a Temporal server.
+- Read [debugging.md](references/debugging.md) when creating or changing root `debug`, a REST Swagger server, MCP Inspector integration, or direct Temporal workflow execution without a Temporal server.
 - Read [runtime-and-resilience.md](references/runtime-and-resilience.md) when changing configuration, startup, dependency health, error containment, timeouts, retries, circuit breakers, health checks, shutdown, or crash behavior.
 - Read [api-and-events.md](references/api-and-events.md) when changing REST or MCP contracts, validation, errors, pagination, idempotency, versioning, rate limits, webhooks, queues, events, scheduled jobs, or CLI consumers.
 - Read [data-integrity.md](references/data-integrity.md) when changing transactions, concurrency, migrations, indexes, query performance, retention, deletion, backups, or restoration.
@@ -23,7 +23,7 @@ Build backend changes around a single object-oriented business-logic core. Treat
 - Read [delivery.md](references/delivery.md) when starting work, creating branches or worktrees, committing, opening or reviewing pull requests, merging, rolling back, or preparing a release tag.
 - Read [feature-flags.md](references/feature-flags.md) when adding or changing feature flags, staged rollouts, kill switches, experiments, provider integrations, or flag cleanup.
 - Read [application-security.md](references/application-security.md) when handling untrusted input, browser requests, proxy headers, client IPs, outbound URLs, uploads, serialization, security headers, CORS, CSRF, injection, or abuse prevention.
-- Read [deployment.md](references/deployment.md) only when the user explicitly asks for Terraform or the task changes an existing `src/terraform` tree. Do not infer or scaffold Terraform from a general backend or deployment request.
+- Read [deployment.md](references/deployment.md) only when the user explicitly asks for Terraform or the task changes an existing root `terraform` tree. Do not infer or scaffold Terraform from a general backend or deployment request.
 - Read [test-effectiveness.md](references/test-effectiveness.md) for every behavior-bearing change and when reviewing whether tests genuinely detect defects beyond achieving coverage.
 - Read [temporal.md](references/temporal.md) when creating or changing production Temporal workflows, activities, workers, payloads, histories, retries, signals, updates, versioning, or deployments.
 - Read [language-profiles.md](references/language-profiles.md) when initializing or changing JavaScript/TypeScript, Go, or Python tooling, formatting, linting, static analysis, testing, coverage, or filenames.
@@ -47,11 +47,11 @@ For a trivial, low-risk task, compress the ceremony while preserving correctness
 
 ## Preserve the core boundaries
 
-- Put all business rules in `src/api/logics`.
-- Let only `src/api/logics` access `src/api/orm` and `src/api/services`.
+- Put all business rules in `src/logic`.
+- Let only `src/logic` access `src/orm` and `src/services`.
 - Never let REST, MCP, Temporal workflows, Temporal activities, or other consumers access the database, ORM, or external services directly.
-- Keep all `index` files export-only and side-effect-free.
-- Keep logic public APIs object-oriented: use static class methods for stateless behavior and instances for identity- or context-bound behavior.
+- Keep package entrypoints such as `index.js`, `index.ts`, and `__init__.py` export-only and side-effect-free; do not invent index files in languages such as Go that do not use them.
+- Keep logic public APIs object-oriented using the selected language's native constructs: use static class methods for stateless behavior where supported, and identity- or context-bound instances or receiver types for stateful behavior.
 - Use OpenTelemetry for all application telemetry and prefer OpenObserve as the observability backend.
 - Contain ordinary runtime errors at their request, message, activity, or job boundary. Crash loudly only when required infrastructure or an unrecoverable process invariant makes safe operation impossible.
 - Require 100% per-file coverage for all authored backend code across lines, branches, functions, and statements.

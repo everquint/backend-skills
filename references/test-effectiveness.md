@@ -39,7 +39,7 @@ Coverage proves that code executed; it does not prove that a test would detect w
 
 ## Mutation testing
 
-Use mutation testing on `logics`, authorization, tenant isolation, money, state transitions, parsers, security controls, and other mission-critical branching code.
+Use mutation testing on `logic`, authorization, tenant isolation, money, state transitions, parsers, security controls, and other mission-critical branching code.
 
 - Run changed-code or incremental mutation tests on pull requests when the toolchain supports them.
 - Run a broader mutation suite on a schedule.

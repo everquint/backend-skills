@@ -15,22 +15,22 @@
 
 - Deny by default and grant the minimum required permission.
 - Authenticate at the REST, MCP, or workflow boundary.
-- Perform authoritative authorization again inside `logics` immediately before sensitive reads, writes, or secret retrieval.
+- Perform authoritative authorization again inside `logic` immediately before sensitive reads, writes, or secret retrieval.
 - Verify the current principal, tenant, ownership, role, action, and target resource using trusted server-side data.
 - Never trust caller-supplied identity, tenant, ownership, or role claims without verified token context.
 - Prevent existence leaks: return the approved not-found/forbidden behavior without confirming inaccessible resources.
-- Keep RBAC and tenant-isolation policy in `logics`; consumers only pass verified context and translate outcomes.
+- Keep RBAC and tenant-isolation policy in `logic`; consumers only pass verified context and translate outcomes.
 
 ## User-managed secrets
 
 Apply this section to product functionality that stores or retrieves secrets supplied or shared by users. Do not confuse this with ordinary deployment environment configuration.
 
 - Store secret values in AWS Secrets Manager, OpenBao, or an equivalent dedicated secret manager.
-- Put provider clients under `src/api/services/<provider-name>`.
+- Put provider clients under `src/services/<provider-name>`.
 - Store only opaque provider references and non-sensitive ownership, tenant, lifecycle, and audit metadata in the database.
 - Return metadata only from list operations.
 - Require an explicit reveal operation for plaintext retrieval.
-- Recheck authorization in `logics` immediately before asking the secret service for the value.
+- Recheck authorization in `logic` immediately before asking the secret service for the value.
 - Minimize plaintext lifetime in memory and transmit only over TLS.
 - Never place secrets in URLs, query strings, logs, traces, errors, analytics, caches, events, tests, fixtures, snapshots, or coverage artifacts.
 - Redact structured fields and provider errors defensively.

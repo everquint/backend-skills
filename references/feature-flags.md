@@ -10,8 +10,8 @@
 
 ## Ownership and placement
 
-- Keep feature-flag business policy in `logics`. REST, MCP, workflows, events, and debug adapters pass verified context and consume the logic outcome.
-- Put an external flag-provider SDK and connection under `src/api/services/<provider-name>`; never import it directly from consumers or ORM.
+- Keep feature-flag business policy in `logic`. REST, MCP, workflows, events, and debug adapters pass verified context and consume the logic outcome.
+- Put an external flag-provider SDK and connection under `src/services/<provider-name>`; never import it directly from consumers or ORM.
 - Prefer a maintained provider or existing platform over a bespoke flag system.
 - Keep flags out of database schemas unless the product explicitly manages flags as domain data.
 - Name every flag in kebab-case or the provider's required equivalent and keep one canonical definition.

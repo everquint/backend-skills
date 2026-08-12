@@ -13,7 +13,7 @@
 Require tests for every behavior-bearing production module.
 
 - Use unit tests for classes, methods, handlers, activities, workflows, ORM behavior, and services.
-- Put the deepest behavioral coverage around `logics`, the canonical owner of business behavior.
+- Put the deepest behavioral coverage around `logic`, the canonical owner of business behavior.
 - Add integration tests for ORM mappings, queries, transactions, relationships, constraints, and migrations against the real database engine or a production-compatible ephemeral instance.
 - Add feature-level end-to-end tests for every delivered feature and supported consumer path.
 - Exempt export-only index files from dedicated unit tests because they contain no behavior.
@@ -21,10 +21,10 @@ Require tests for every behavior-bearing production module.
 
 ## Shared feature contracts
 
-Centralize reusable test behavior under `src/api/tests`:
+Centralize reusable test behavior under `src/tests`:
 
 ```text
-src/api/tests/
+src/tests/
 ├── shared/
 │   ├── fixtures/
 │   ├── factories/
@@ -51,13 +51,13 @@ Require 100% coverage per authored file, not only as a repository aggregate, for
 
 Apply the gate to all authored backend layers, including:
 
-- `src/api/logics`
-- `src/api/orm`
-- `src/api/services`
-- `src/api/rest`
-- `src/api/mcp`
-- `src/api/workflows`
-- `src/debug`
+- `src/logic`
+- `src/orm`
+- `src/services`
+- `src/restapi`
+- `src/mcp`
+- `src/workflows`
+- `debug`
 - Security, authorization, RBAC, and mission-critical code
 
 - Block CI and merges when any per-file threshold fails.

@@ -11,10 +11,10 @@
 
 ## Purpose and structure
 
-Use `src/debug` for development-only entrypoints that make each protocol surface easy to exercise locally:
+Use root `debug` for development-only entrypoints that make each protocol surface easy to exercise locally. The TypeScript example below uses `.ts`; follow the selected language profile for filenames and package entrypoints:
 
 ```text
-src/debug/
+debug/
 ├── rest/
 │   ├── swagger-server.ts
 │   └── index.ts
@@ -31,7 +31,7 @@ src/debug/
 
 Create only the adapters required by the repository. Keep every `index` export-only. Put startup and command-line behavior in explicitly named files. Follow the language's file-extension and naming constraints while preserving the same structure.
 
-Debug adapters are consumers. They may invoke REST, MCP, workflows, activities, or `logics` through supported public entrypoints. They must never access ORM, database clients, provider services, or vendor SDKs directly.
+Debug adapters are consumers. They may invoke REST, MCP, workflows, activities, or `logic` through supported public entrypoints. They must never access ORM, database clients, provider services, or vendor SDKs directly.
 
 ## REST Swagger server
 
@@ -54,7 +54,7 @@ Provide a development launcher or configuration for the official MCP Inspector w
 - Start or connect the actual MCP server using its supported local transport.
 - Expose tools, resources, prompts, schemas, notifications, and errors through the Inspector.
 - Exercise the same MCP handlers and logic calls used in deployment.
-- Keep Inspector-specific configuration under `src/debug/mcp` and out of production startup.
+- Keep Inspector-specific configuration under `debug/mcp` and out of production startup.
 - Default to local, non-production endpoints and synthetic credentials.
 - Never place access tokens, API keys, client secrets, or user secrets in Inspector command arguments, committed configuration, screenshots, or recorded sessions.
 
@@ -69,13 +69,13 @@ The direct runner must:
 - accept explicit, validated workflow input;
 - invoke the workflow's debug-compatible orchestration entrypoint or a thin direct-execution adapter;
 - replace Temporal activity proxies with local activity implementations or controlled fakes;
-- route all real side effects through activities and `logics`, never through debug-only ORM or service access;
+- route all real side effects through activities and `logic`, never through debug-only ORM or service access;
 - print or return the workflow result and a readable event or step summary;
 - support controlled activity success and failure scenarios;
 - use synthetic data by default;
 - remain excluded from production entrypoints and images.
 
-Design workflow orchestration so the debug runner can exercise the meaningful sequence without copying it. Keep one canonical set of business rules in `logics` and one canonical workflow definition. A thin adapter may supply local activity implementations and substitutes for Temporal time, signals, or cancellation, but it must not become a second workflow implementation.
+Design workflow orchestration so the debug runner can exercise the meaningful sequence without copying it. Keep one canonical set of business rules in `logic` and one canonical workflow definition. A thin adapter may supply local activity implementations and substitutes for Temporal time, signals, or cancellation, but it must not become a second workflow implementation.
 
 Direct execution is a developer feedback tool, not a Temporal emulator. It does not prove workflow determinism, replay compatibility, durable timers, retries, signals, queries, cancellation, heartbeats, task-queue behavior, or worker deployment. Verify those separately with the Temporal test environment and feature-level end-to-end tests.
 
@@ -83,7 +83,7 @@ Direct execution is a developer feedback tool, not a Temporal emulator. It does 
 
 - Mark every debug entrypoint as development-only and fail closed outside an explicitly allowed local or development environment.
 - Bind debug servers to loopback by default. Require an explicit, reviewed configuration to expose them on another interface.
-- Never deploy `src/debug` in REST, MCP, or workflow production images.
+- Never deploy root `debug` in REST, MCP, or workflow production images.
 - Never disable or bypass authentication or authorization against shared or production data.
 - If a local authentication shortcut is required, restrict it to synthetic local identities and make production activation impossible by construction.
 - Apply OpenTelemetry instrumentation and secret redaction to debug executions using the same shared facilities as production.
@@ -91,10 +91,10 @@ Direct execution is a developer feedback tool, not a Temporal emulator. It does 
 
 ## Tests and documentation
 
-Require 100% per-file coverage for authored code under `src/debug`.
+Require 100% per-file coverage for authored code under root `debug`.
 
 - Unit-test configuration, input validation, launch commands, local activity substitution, failures, and environment guards.
 - Add smoke tests that start the Swagger server and MCP server on ephemeral local ports.
 - Compare direct workflow-runner outcomes with Temporal test-environment outcomes for representative feature contracts.
 - Keep feature-level E2E tests for REST, MCP, and Temporal separately; debug adapters do not replace deployed-path tests.
-- Document one command for starting each adapter, its required local dependencies, safe example inputs, and the limitations of direct Temporal execution under `src/docs/development`.
+- Document one command for starting each adapter, its required local dependencies, safe example inputs, and the limitations of direct Temporal execution under `docs/development`.
