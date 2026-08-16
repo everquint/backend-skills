@@ -11,7 +11,7 @@
 
 ## Shared rules
 
-- Keep authored application code under `src`, with `logic`, `orm`, `services`, `restapi`, `mcp`, and `workflows` as sibling modules when present. Keep `debug`, `docs`, and opt-in `terraform` at the repository root.
+- Keep authored application code under root `src`, with `logic`, `orm`, `services`, `restapi`, `mcp`, and `workflows` as sibling modules when present. A Rust Cargo workspace is the exception: it has no root `src`; every member package owns `crates/<crate-name>/src`. Keep `debug`, `docs`, and opt-in `terraform` at the repository root.
 - Pin the runtime, package manager, formatter, linter, static analyzer, test runner, and coverage tools through the language's normal reproducible mechanism.
 - Run formatting, linting, static or type checks, tests, architecture checks, and coverage locally and in CI with warnings treated as failures.
 - Use four spaces unless the language formatter requires otherwise; Go uses `gofmt` tabs.
@@ -157,6 +157,8 @@ project/
 ├── terraform/              # only when explicitly requested
 └── target/                 # generated and ignored
 ```
+
+Do not create `project/src` for a Cargo workspace. The workspace root is not an application package; each member under `crates` keeps its own Cargo-standard `src` directory.
 
 - Make consumer crates depend on `core`; never let `core` depend on REST, MCP, or workflow crates.
 - Add only the service crates the confirmed scope requires.

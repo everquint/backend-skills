@@ -35,7 +35,7 @@ repository/
 
 Add only directories required by the project. Add root `terraform` only when the user explicitly requests Terraform; never scaffold it from a general backend or deployment request. Use root `debug` only for the development adapters defined in [debugging.md](debugging.md): REST Swagger, MCP Inspector, and direct Temporal workflow execution without a Temporal server. Keep every `index.js`, `index.ts`, `__init__.py`, or language-equivalent package entrypoint limited to exports where the language uses such files. Put startup, registration, wiring, and side effects in explicitly named files. Do not invent an `index` file for Go.
 
-For Rust, preserve these ownership boundaries through Cargo packages rather than forcing the generic tree. Ask whether the planned backend has more than one independently deployable service, then follow the single-package or workspace layout in [language-profiles.md](language-profiles.md).
+For Rust, preserve these ownership boundaries through Cargo packages rather than forcing the generic tree. Ask whether the planned backend has more than one independently deployable service, then follow the single-package or workspace layout in [language-profiles.md](language-profiles.md). A Rust workspace has no root `src`; each member crate has its own `crates/<crate-name>/src`.
 
 ## Dependency rules
 
