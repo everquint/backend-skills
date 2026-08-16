@@ -13,7 +13,7 @@
 Apply the standard from the first commit:
 
 1. Initialize every project and package at `0.0.0`.
-2. Create only the required `src/logic`, `src/orm`, `src/services`, `src/restapi`, `src/mcp`, `src/workflows`, and `src/dockerfiles` directories. For Rust, first run the single-package versus workspace decision in [language-profiles.md](language-profiles.md) and use its Cargo-native layout instead. Create root `debug` and `docs` only as needed. Create root `terraform` only when the user explicitly asks for Terraform.
+2. Create only the required `src/logic`, `src/orm`, `src/services`, `src/restapi`, `src/mcp`, `src/workflows`, and `src/dockerfiles` directories. For TypeScript and Rust, first run the single-package versus workspace decision in [language-profiles.md](language-profiles.md) and use the pnpm- or Cargo-native layout when multiple independently deployable services are planned. Create root `debug` and `docs` only as needed. Create root `terraform` only when the user explicitly asks for Terraform.
 3. Establish the dependency direction from [architecture.md](architecture.md) before implementing the first feature.
 4. Configure the formatter, linter, type or static checker, tests, per-file coverage, architecture checks, and secret scanning before authored production code grows around missing gates.
 5. Add documentation navigation, an ADR directory, and the changelog mechanism described in [documentation.md](documentation.md).

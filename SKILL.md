@@ -1,6 +1,6 @@
 ---
 name: everquint-backend-skill
-description: Apply Ever Quint's language-neutral backend engineering standards when creating, changing, fixing, testing, debugging, documenting, releasing, observing, deploying, or reviewing backend repositories and features. Use for backend architecture, object-oriented logic, ORM and data integrity, REST/MCP/events, production Temporal workflows and payload limits, runtime resilience, infrastructure dependencies, application security, trusted proxies and client IPs, secrets, OpenTelemetry/OpenObserve, debug tooling, Terraform, feature flags, effective tests and coverage, JavaScript/TypeScript, Go, Python, Rust and Cargo workspaces, delivery workflow, documentation, supply-chain security, Docker images, package publishing, or backend code quality.
+description: Apply Ever Quint's language-neutral backend engineering standards when creating, changing, fixing, testing, debugging, documenting, releasing, observing, deploying, or reviewing backend repositories and features. Use for backend architecture, object-oriented logic, ORM and data integrity, REST/MCP/events, production Temporal workflows and payload limits, runtime resilience, infrastructure dependencies, application security, trusted proxies and client IPs, secrets, OpenTelemetry/OpenObserve, debug tooling, Terraform, feature flags, effective tests and coverage, JavaScript/TypeScript and pnpm workspaces, Go, Python, Rust and Cargo workspaces, delivery workflow, documentation, supply-chain security, Docker images, package publishing, or backend code quality.
 ---
 
 # Ever Quint Backend Standards
@@ -47,8 +47,9 @@ For a trivial, low-risk task, compress the ceremony while preserving correctness
 
 ## Preserve the core boundaries
 
-- Put all business rules in `src/logic`.
-- Let only `src/logic` access `src/orm` and `src/services`.
+- Resolve the core source root from the selected layout: `src` for a single package, `packages/core/src` for a TypeScript pnpm workspace, and `crates/core/src` for a Rust Cargo workspace.
+- Put all business rules under `<core-source-root>/logic`.
+- Let only `<core-source-root>/logic` access `<core-source-root>/orm` and `<core-source-root>/services`.
 - Never let REST, MCP, Temporal workflows, Temporal activities, or other consumers access the database, ORM, or external services directly.
 - Keep package entrypoints such as `index.js`, `index.ts`, and `__init__.py` export-only and side-effect-free; do not invent index files in languages such as Go that do not use them.
 - Keep logic public APIs object-oriented using the selected language's native constructs: use static class methods for stateless behavior where supported, and identity- or context-bound instances or receiver types for stateful behavior.

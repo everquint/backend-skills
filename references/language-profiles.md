@@ -11,7 +11,7 @@
 
 ## Shared rules
 
-- Keep authored application code under root `src`, with `logic`, `orm`, `services`, `restapi`, `mcp`, and `workflows` as sibling modules when present. A Rust Cargo workspace is the exception: it has no root `src`; every member package owns `crates/<crate-name>/src`. Keep `debug`, `docs`, and opt-in `terraform` at the repository root.
+- Keep authored application code under root `src`, with `logic`, `orm`, `services`, `restapi`, `mcp`, and `workflows` as sibling modules when present. TypeScript pnpm workspaces and Rust Cargo workspaces are exceptions: they have no application code under root `src`; every member package owns its own `src`. Keep `debug`, `docs`, and opt-in `terraform` at the repository root.
 - Pin the runtime, package manager, formatter, linter, static analyzer, test runner, and coverage tools through the language's normal reproducible mechanism.
 - Run formatting, linting, static or type checks, tests, architecture checks, and coverage locally and in CI with warnings treated as failures.
 - Use four spaces unless the language formatter requires otherwise; Go uses `gofmt` tabs.
@@ -21,7 +21,16 @@
 
 ## JavaScript and TypeScript
 
-Use this TypeScript project shape, adding only modules the project needs:
+Before scaffolding a TypeScript backend, ask the user:
+
+> Will the currently planned backend have more than one independently deployable service, such as REST API, MCP server, or independently deployed workflow worker?
+
+- If the answer is no and the backend is REST-only, use one package.
+- If the answer is yes, use a pnpm workspace with one shared core package and one app package per independently deployable service.
+- If the answer is unclear, explain the two layouts and wait for confirmation. Do not choose silently.
+- Do not create a monorepo merely for tests, debug adapters, internal modules, or hypothetical future services.
+
+Use this single-package TypeScript shape for a REST-only backend, adding only modules the project needs:
 
 ```text
 project/
@@ -46,6 +55,52 @@ project/
 ```
 
 Compile TypeScript from `src` into the corresponding path under `dist`: `src/logic` becomes `dist/logic`, `src/restapi` becomes `dist/restapi`, and so on. Never edit or commit generated `dist` output unless the repository's distribution model explicitly requires committed build artifacts.
+
+Use this pnpm workspace shape when multiple independently deployable services are planned:
+
+```text
+project/
+├── package.json                 # private orchestration package
+├── pnpm-workspace.yaml
+├── pnpm-lock.yaml
+├── packages/
+│   └── core/
+│       ├── package.json
+│       ├── src/
+│       │   ├── logic/
+│       │   ├── orm/
+│       │   └── services/
+│       └── dist/                # generated
+├── apps/
+│   ├── restapi/
+│   │   ├── package.json
+│   │   ├── src/
+│   │   └── dist/                # generated
+│   ├── mcp/
+│   │   ├── package.json
+│   │   ├── src/
+│   │   └── dist/                # generated
+│   └── workflows/
+│       └── <workflow-name>/
+│           ├── package.json
+│           ├── src/
+│           └── dist/            # generated
+├── debug/
+├── docs/
+└── terraform/                   # only when explicitly requested
+```
+
+- Do not put application code in root `src` or generated application output in root `dist` for a pnpm workspace. Each package owns its `src`, tests, build configuration, and generated `dist`.
+- Make every app depend on the shared core package through the pnpm `workspace:` protocol. Never let core depend on an app package.
+- Keep logic, ORM, and non-database provider services in core. Keep REST, MCP, and workflow protocol handling in their owning apps.
+- Create one workflow app package per independently deployable workflow worker. Do not create app packages for workflows that always deploy as one worker.
+- Add only the app packages required by the confirmed scope.
+- Keep the root package private and limited to workspace orchestration, shared tooling, and repository-wide commands.
+- Pin pnpm through the root `packageManager` field and commit the single root `pnpm-lock.yaml`.
+- Start every package at `0.0.0` and use reviewed Changesets for workspace versioning.
+- Reject cyclic workspace dependencies and require recursive commands to fail when their intended package filter matches nothing.
+
+pnpm reference: https://pnpm.io/workspaces
 
 Required profile:
 
