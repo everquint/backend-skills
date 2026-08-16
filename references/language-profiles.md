@@ -6,6 +6,7 @@
 - JavaScript and TypeScript
 - Go
 - Python
+- Rust
 - Coverage honesty
 
 ## Shared rules
@@ -99,10 +100,92 @@ Required profile:
 - Use PascalCase for classes and exception types.
 - Keep `__init__.py` export-only. Treat it as the language-equivalent index exception to filename casing and dedicated tests.
 
+## Rust
+
+Before scaffolding a Rust backend, ask the user:
+
+> Will the currently planned backend have more than one independently deployable service, such as REST API, MCP server, or independently deployed workflow worker?
+
+- If the answer is no and the backend is REST-only, use one Cargo package.
+- If the answer is yes, use a Cargo workspace with one shared core crate and one crate per independently deployable service.
+- If the answer is unclear, explain the two layouts and wait for confirmation. Do not choose silently.
+- Do not create a workspace merely for tests, examples, debug runners, internal modules, or hypothetical future services.
+
+Use this single-package layout for a REST-only backend:
+
+```text
+project/
+├── Cargo.toml
+├── Cargo.lock
+├── src/
+│   ├── lib.rs
+│   ├── main.rs
+│   ├── logic/
+│   ├── orm/
+│   ├── services/
+│   └── restapi/
+├── tests/
+├── examples/
+├── debug/
+├── docs/
+├── terraform/              # only when explicitly requested
+└── target/                 # generated and ignored
+```
+
+Use this workspace layout when multiple independently deployable services are planned:
+
+```text
+project/
+├── Cargo.toml              # workspace manifest
+├── Cargo.lock
+├── crates/
+│   ├── core/
+│   │   └── src/
+│   │       ├── lib.rs
+│   │       ├── logic/
+│   │       ├── orm/
+│   │       └── services/
+│   ├── restapi/
+│   │   └── src/main.rs
+│   ├── mcp/
+│   │   └── src/main.rs
+│   └── workflows/
+│       └── <workflow-name>/
+│           └── src/main.rs
+├── debug/
+├── docs/
+├── terraform/              # only when explicitly requested
+└── target/                 # generated and ignored
+```
+
+- Make consumer crates depend on `core`; never let `core` depend on REST, MCP, or workflow crates.
+- Add only the service crates the confirmed scope requires.
+- Keep unit tests beside their modules. In a single package, put Cargo integration tests under root `tests`; in a virtual workspace, put them under the owning crate's `tests` directory because a workspace-only root is not a package test target.
+- Put executable debug examples under the owning crate's `examples` directory. Use root `debug` for shared launch configuration and supporting material.
+- Treat `target` as Cargo-generated build and cache output, not as a clean distributable tree. Ignore it in Git and copy only the required release binaries into packages or container images.
+- Expect release binaries under `target/release` or `target/<target-triple>/release` when cross-compiling; do not hard-code one path without accounting for the build target.
+
+Required profile:
+
+- `cargo fmt --check` with rustfmt for formatting.
+- `cargo clippy --all-targets --all-features -- -D warnings` for linting.
+- `cargo test --all-targets --all-features` for the relevant package or the full workspace.
+- Pin the Rust toolchain and commit `Cargo.lock` for deployable applications and workspaces.
+- Use lowercase snake_case Rust module filenames and PascalCase exported structs, enums, and traits.
+- Use structs, impl blocks, traits, and associated functions to preserve the OOP domain model without imitating class inheritance.
+- Use a maintained Rust coverage tool and enforce every metric it actually supports; apply the coverage-honesty rules below.
+
+Cargo references:
+
+- Package layout: https://doc.rust-lang.org/cargo/guide/project-layout.html
+- Workspaces: https://doc.rust-lang.org/cargo/reference/workspaces.html
+- Build output and cache: https://doc.rust-lang.org/cargo/reference/build-cache.html
+
 ## Coverage honesty
 
 The semantic requirement is 100% execution of authored lines, statements, functions or methods, and decisions or branches. Do not claim a metric the selected language tool does not measure.
 
 - JavaScript/TypeScript and Python must mechanically gate all four dimensions per file.
 - Go's standard coverage is statement-oriented. Gate 100% statement coverage per package and function report, require explicit tests for every decision outcome, and use mutation testing plus review to expose missed branches. If a maintained compatible branch-coverage tool is adopted, gate it at 100% per authored file.
+- Rust coverage capabilities vary by toolchain and coverage tool. Gate every supported authored-file metric at 100%, explicitly test each decision outcome, and use mutation testing plus review rather than relabeling unsupported branch or function metrics.
 - Report tool limitations openly. A repository aggregate or a renamed metric never satisfies a per-file requirement.

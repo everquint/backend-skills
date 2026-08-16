@@ -18,7 +18,7 @@ Invoke the skill explicitly as `$everquint-backend-skill`, or let the agent sele
 - REST, MCP, and Temporal workflows are protocol consumers. They never access the ORM, database, or external providers directly.
 - External connections other than the ORM live under `src/services`.
 - Keep protocol consumers beside the core under `src/restapi`, `src/mcp`, and `src/workflows`; keep `debug`, `docs`, and opt-in `terraform` at the repository root.
-- TypeScript compiles `src` into a generated mirror under `dist`; Python, Go, and other languages do not create that JavaScript output tree.
+- TypeScript compiles `src` into a generated mirror under `dist`; Python and Go do not create that JavaScript output tree. Rust uses Cargo's generated `target` directory and chooses a single package or workspace based on the confirmed number of independently deployable services.
 - All authored backend code requires 100% per-file coverage across lines, branches, functions, and statements, with tests judged for defect-detection effectiveness.
 - OpenTelemetry is mandatory for telemetry; OpenObserve is preferred as the backend.
 - Ordinary runtime errors are contained at their boundary. The process exits loudly when required infrastructure or a process invariant makes safe operation impossible.

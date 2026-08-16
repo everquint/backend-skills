@@ -1,6 +1,6 @@
 ---
 name: everquint-backend-skill
-description: Apply Ever Quint's language-neutral backend engineering standards when creating, changing, fixing, testing, debugging, documenting, releasing, observing, deploying, or reviewing backend repositories and features. Use for backend architecture, object-oriented logic, ORM and data integrity, REST/MCP/events, production Temporal workflows and payload limits, runtime resilience, infrastructure dependencies, application security, trusted proxies and client IPs, secrets, OpenTelemetry/OpenObserve, debug tooling, Terraform, feature flags, effective tests and coverage, JavaScript/TypeScript, Go, Python, delivery workflow, documentation, supply-chain security, Docker images, package publishing, or backend code quality.
+description: Apply Ever Quint's language-neutral backend engineering standards when creating, changing, fixing, testing, debugging, documenting, releasing, observing, deploying, or reviewing backend repositories and features. Use for backend architecture, object-oriented logic, ORM and data integrity, REST/MCP/events, production Temporal workflows and payload limits, runtime resilience, infrastructure dependencies, application security, trusted proxies and client IPs, secrets, OpenTelemetry/OpenObserve, debug tooling, Terraform, feature flags, effective tests and coverage, JavaScript/TypeScript, Go, Python, Rust and Cargo workspaces, delivery workflow, documentation, supply-chain security, Docker images, package publishing, or backend code quality.
 ---
 
 # Ever Quint Backend Standards
@@ -26,7 +26,7 @@ Build backend changes around a single object-oriented business-logic core. Treat
 - Read [deployment.md](references/deployment.md) only when the user explicitly asks for Terraform or the task changes an existing root `terraform` tree. Do not infer or scaffold Terraform from a general backend or deployment request.
 - Read [test-effectiveness.md](references/test-effectiveness.md) for every behavior-bearing change and when reviewing whether tests genuinely detect defects beyond achieving coverage.
 - Read [temporal.md](references/temporal.md) when creating or changing production Temporal workflows, activities, workers, payloads, histories, retries, signals, updates, versioning, or deployments.
-- Read [language-profiles.md](references/language-profiles.md) when initializing or changing JavaScript/TypeScript, Go, or Python tooling, formatting, linting, static analysis, testing, coverage, or filenames.
+- Read [language-profiles.md](references/language-profiles.md) when initializing or changing JavaScript/TypeScript, Go, Python, or Rust tooling, project layout, formatting, linting, static analysis, testing, coverage, or filenames.
 - Read [documentation.md](references/documentation.md) when creating or changing documentation, architecture decisions, public contracts, or notable behavior.
 - Read [release.md](references/release.md) when initializing versions, tagging releases, publishing packages, or building and publishing Docker images.
 
