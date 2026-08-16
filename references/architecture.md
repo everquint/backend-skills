@@ -105,7 +105,7 @@ Put Drizzle, Mongoose, or the selected language's equivalent persistence definit
 
 - Use plural snake_case table and collection names: `projects`, `users`, `project_members`.
 - Use snake_case stored fields and columns: `project_id`, `created_at`.
-- Use camelCase ORM-facing identifiers in application code: `projectId`, `createdAt`.
+- Use the selected language's native application identifier casing for ORM-facing names: `projectId` and `createdAt` in JavaScript or TypeScript, and `project_id` and `created_at` in Rust.
 - Explicitly configure collection names instead of relying on ODM auto-pluralization.
 - Keep business rules out of schemas, models, hooks, repositories, and migrations.
 - Keep transactions and persistence mechanics in ORM, but initiate business operations through logic methods.
@@ -178,9 +178,11 @@ src/dockerfiles/
 - Name all files and directories in kebab-case where the language and toolchain permit it.
 - Use lowercase snake_case for Go source filenames because hyphens are not valid in Go package filenames; keep Go directories in kebab-case only when the Go toolchain accepts the import path, otherwise use a single lowercase word.
 - Use lowercase snake_case for importable Python module filenames because hyphens are not valid Python identifiers; keep non-module files and directories in kebab-case where the toolchain permits it.
+- Use Rust-native casing for all authored Rust: `snake_case` for modules, source filenames, functions, methods, fields, and variables; `UpperCamelCase` for types, traits, and enum variants; and `SCREAMING_SNAKE_CASE` for constants and statics.
 - Name classes in PascalCase.
 - Name methods, functions, properties, variables, and parameters in camelCase.
 - Use camelCase for new application-facing payload fields unless an external protocol mandates another casing.
+- Treat the preceding class, identifier, and payload defaults as non-Rust rules. In Rust, preserve required wire casing through explicit serialization mappings while keeping Rust identifiers idiomatic.
 - Preserve protocol-defined names such as OAuth fields exactly.
 - Use four spaces per indentation level and no tabs by default.
 - For Go, follow `gofmt`, including tab indentation.

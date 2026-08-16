@@ -15,7 +15,7 @@
 - Pin the runtime, package manager, formatter, linter, static analyzer, test runner, and coverage tools through the language's normal reproducible mechanism.
 - Run formatting, linting, static or type checks, tests, architecture checks, and coverage locally and in CI with warnings treated as failures.
 - Use four spaces unless the language formatter requires otherwise; Go uses `gofmt` tabs.
-- Preserve Ever Quint naming: classes or class-equivalent exported types in PascalCase and application identifiers in camelCase, except syntax or toolchain constraints stated below.
+- Preserve Ever Quint naming where the language profile does not override it: classes or class-equivalent exported types in PascalCase and application identifiers in camelCase. Language-native profiles, including Rust, take precedence.
 - Use commitlint for commits regardless of application language.
 - Add no second tool that owns the same concern without a documented gap and ADR.
 
@@ -228,7 +228,8 @@ Required profile:
 - `cargo clippy --all-targets --all-features -- -D warnings` for linting.
 - `cargo test --all-targets --all-features` for the relevant package or the full workspace.
 - Pin the Rust toolchain and commit `Cargo.lock` for deployable applications and workspaces.
-- Use lowercase snake_case Rust module filenames and PascalCase exported structs, enums, and traits.
+- Follow Rust naming conventions throughout authored Rust code. Use `snake_case` for modules, source filenames, functions, methods, struct fields, and local variables; `UpperCamelCase` for structs, enums, enum variants, traits, and type parameters; and `SCREAMING_SNAKE_CASE` for constants and statics. Use `snake_case!` for macro names and short lowercase names for lifetimes.
+- Do not translate Rust identifiers to Ever Quint camelCase. Keep externally prescribed casing at serialization and protocol boundaries, mapping it explicitly to idiomatic Rust identifiers.
 - Use structs, impl blocks, traits, and associated functions to preserve the OOP domain model without imitating class inheritance.
 - Use a maintained Rust coverage tool and enforce every metric it actually supports; apply the coverage-honesty rules below.
 
