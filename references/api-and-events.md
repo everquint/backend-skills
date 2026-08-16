@@ -70,4 +70,4 @@ Add `src/events`, `src/webhooks`, `src/jobs`, or `src/cli` only when the project
 
 ## Verification
 
-Use shared feature contracts to prove equivalent behavior across REST, MCP, events, webhooks, jobs, and CLI. Test malformed data, stable errors, authorization, limits, idempotent replay, duplicate and out-of-order delivery, retry exhaustion, dead-letter replay, webhook forgery, and compatibility. Require 100% per-file coverage for every authored consumer.
+Use shared feature contracts to prove equivalent behavior across REST, MCP, events, webhooks, jobs, and CLI. Test each consumer's happy path and meaningful failures, including malformed data, stable errors, authorization, limits, idempotent replay, duplicate and out-of-order delivery, retry exhaustion, dead-letter replay, webhook forgery, and compatibility. Include every authored consumer in the 85% overall coverage gate and retain stricter coverage for security or mission-critical controls.

@@ -57,4 +57,4 @@ Every flag must record:
 - Test both branches before release and retain tests until the flag and losing branch are removed.
 - Verify durable workflow behavior when a flag changes during execution.
 - Verify metrics and traces identify the flag decision with bounded, non-sensitive attributes.
-- Require 100% per-file coverage for authored flag definitions, evaluation adapters, defaults, and cleanup behavior.
+- Include authored flag definitions, evaluation adapters, defaults, and cleanup behavior in the 85% overall coverage gate. Retain 100% branch coverage when a flag participates in a security or explicitly mission-critical control.

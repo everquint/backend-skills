@@ -41,11 +41,13 @@ Build backend changes around a single object-oriented business-logic core. Treat
 3. Resolve dependency behavior from the installed version or primary documentation, and probe uncertain runtime behavior before designing around it.
 4. State material assumptions. Surface competing interpretations and tradeoffs instead of choosing silently. Ask only when ambiguity could materially change the result or risk.
 5. Define observable success criteria. For multi-step work, give each step a verification check.
-6. Write or update tests first when fixing a bug or adding behavior. Reproduce defects before changing implementation.
-7. Make the smallest change that satisfies the request. Avoid speculative features, abstractions, configuration, and adjacent cleanup.
-8. Keep every changed line traceable to the requested outcome. Remove only artifacts made obsolete by the current change.
-9. Run focused tests while iterating, then the relevant full suite, coverage gates, linter, formatter, type checker, build, and architecture checks.
-10. Review the final diff for scope, readability, boundary violations, secret exposure, accidental formatting churn, and documentation or changelog drift.
+6. Build the smallest end-to-end implementation that makes the requested functionality work. Verify its primary happy path directly; for a defect, reproduce the failure first when practical.
+7. As soon as the functional milestone works, tell the user: the task is ready for their functional testing, and compliance work will continue while they review. Do not present this milestone as final completion.
+8. Continue with the compliance pass: add or complete happy-path and failure-path tests for every feature or function, audit security and boundaries, and run the applicable quality gates. Do this concurrently with user review when the environment supports it; do not abandon it when the user supplies the next task.
+9. Make the smallest change that satisfies the request. Avoid speculative features, abstractions, configuration, and adjacent cleanup.
+10. Keep every changed line traceable to the requested outcome. Remove only artifacts made obsolete by the current change.
+11. Run focused tests, then the relevant full suite, coverage gates, linter, formatter, type checker, build, architecture checks, and security checks before final delivery or merge.
+12. Review the final diff for scope, readability, boundary violations, secret exposure, accidental formatting churn, and documentation or changelog drift.
 
 For a trivial, low-risk task, compress the ceremony while preserving correctness and verification.
 
@@ -59,7 +61,8 @@ For a trivial, low-risk task, compress the ceremony while preserving correctness
 - Keep logic public APIs object-oriented using the selected language's native constructs: use static class methods for stateless behavior where supported, and identity- or context-bound instances or receiver types for stateful behavior.
 - Use OpenTelemetry for all application telemetry and prefer OpenObserve as the observability backend.
 - Contain ordinary runtime errors at their request, message, activity, or job boundary. Crash loudly only when required infrastructure or an unrecoverable process invariant makes safe operation impossible.
-- Require 100% per-file coverage for all authored backend code across lines, branches, functions, and statements.
+- Require at least 85% overall coverage for authored backend code across every metric the selected tool reliably measures. Retain 100% coverage across reliably measured metrics for authentication, authorization, RBAC, tenant isolation, secret handling, encryption, and explicitly mission-critical controls.
+- Require meaningful happy-path and failure-path tests for every feature and behavior-bearing function regardless of the measured coverage percentage.
 - Never weaken authentication, authorization, tenant isolation, secret handling, tests, lint, or coverage to make an implementation easier.
 
 ## Handle conflicts

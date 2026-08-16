@@ -12,6 +12,7 @@
 
 Require tests for every behavior-bearing production module.
 
+- Test the happy path and at least one meaningful failure path for every delivered feature and behavior-bearing public function. Add validation, authorization, boundary, and regression cases when the behavior contains those decisions.
 - Use unit tests for classes, methods, handlers, activities, workflows, ORM behavior, and services.
 - Put the deepest behavioral coverage around `logic`, the canonical owner of business behavior.
 - Add integration tests for ORM mappings, queries, transactions, relationships, constraints, and migrations against the real database engine or a production-compatible ephemeral instance.
@@ -42,7 +43,7 @@ src/tests/
 
 ## Coverage gates
 
-Require 100% coverage per authored file, not only as a repository aggregate, for:
+Require at least 85% overall coverage across authored backend code for every metric the selected tool reliably measures:
 
 - Lines
 - Branches
@@ -60,10 +61,13 @@ Apply the gate to all authored backend layers, including:
 - `debug`
 - Security, authorization, RBAC, and mission-critical code
 
-- Block CI and merges when any per-file threshold fails.
+- Block CI and merges when any required overall threshold fails.
 - Do not exclude authored code merely to make the number pass.
 - Permit exclusions only for generated or vendored code, with explicit configuration.
-- Treat 100% coverage as a floor for execution, not proof of correct assertions.
+- Retain 100% coverage across every reliably measured metric for authentication, authorization, RBAC, tenant isolation, secret handling, encryption, API-key validation, and explicitly mission-critical controls.
+- Treat 85% coverage as a minimum aggregate signal, not proof that any feature or failure behavior was tested.
+- Never use aggregate coverage to waive the happy-path and failure-path test requirement for each feature and behavior-bearing public function.
+- Do not block the functional milestone on the completed coverage or compliance suite. Require every applicable gate before final delivery, merge, release, or deployment.
 
 ## Layer-specific expectations
 
@@ -84,7 +88,7 @@ Apply the gate to all authored backend layers, including:
 - Test authored queries, transformations, hooks, transaction behavior, and error paths.
 - Test schemas for field mapping, defaults, relationships, uniqueness, foreign keys, and relevant constraints.
 - Test migrations forward against the actual database engine. Test rollback when the migration strategy supports rollback.
-- Include handwritten migrations in the 100% requirement.
+- Include handwritten migrations in authored coverage and test their successful and failure behavior where applicable.
 - Exclude generated clients or generated migrations from percentage calculations, but still verify that they apply successfully.
 
 ### Services
@@ -109,9 +113,9 @@ Apply the gate to all authored backend layers, including:
 
 ## Verification workflow
 
-1. Run a focused test that reproduces the defect or specifies the feature.
-2. Confirm the test fails for the expected reason before a bug fix when practical.
-3. Implement the smallest change and rerun the focused suite.
+1. Implement the smallest working vertical slice and verify the primary behavior directly. For a defect, reproduce the failure first when practical.
+2. Tell the user the functionality is ready for their testing and that the compliance pass is continuing while they review.
+3. Add or complete happy-path and meaningful failure-path tests for every changed feature and behavior-bearing public function.
 4. Run unit, integration, and feature E2E suites relevant to the change.
-5. Run per-file coverage, linter, formatter, type checker, build, and architecture checks.
+5. Run overall coverage, linter, formatter, type checker, build, architecture, and security checks.
 6. Inspect reports and the final diff; do not rely only on an exit code.

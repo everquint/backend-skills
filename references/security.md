@@ -48,7 +48,7 @@ Never recommend storing retrievable plaintext secrets in a database. If a hard r
 5. Store the ciphertext, nonce, authentication tag, key identifier, and key version needed for safe decryption and rotation.
 6. Support key rotation and re-encryption.
 7. Never design custom cryptography.
-8. Apply the same authorization, redaction, audit, and 100% branch-coverage requirements.
+8. Apply the same authorization, redaction, audit, and 100% security-control coverage requirements.
 
 ## Passwordless authentication
 
@@ -109,7 +109,7 @@ For private or service-to-service MCP without end-user identity:
 
 ## Tests and audit evidence
 
-- Require 100% branch coverage for authentication, authorization, RBAC, tenant isolation, secret handling, encryption, and API-key validation.
+- Require 100% coverage across every reliably measured metric for authentication, authorization, RBAC, tenant isolation, secret handling, encryption, and API-key validation.
 - Test valid, invalid, expired, revoked, replayed, cross-tenant, wrong-audience, and insufficient-scope cases.
 - Test that logs, traces, errors, events, snapshots, and responses do not leak secrets or tokens.
 - Preserve CI results, reviews, security-test reports, and relevant audit logs as evidence that controls operated consistently.

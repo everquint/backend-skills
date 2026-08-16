@@ -91,7 +91,7 @@ Direct execution is a developer feedback tool, not a Temporal emulator. It does 
 
 ## Tests and documentation
 
-Require 100% per-file coverage for authored code under root `debug`.
+Include authored root `debug` code in the 85% overall coverage gate and test each adapter's happy and failure paths.
 
 - Unit-test configuration, input validation, launch commands, local activity substitution, failures, and environment guards.
 - Add smoke tests that start the Swagger server and MCP server on ephemeral local ports.

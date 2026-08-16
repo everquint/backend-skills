@@ -53,7 +53,7 @@ concurrency:
 - Validate the tag with a strict semantic-version parser; do not rely only on the glob.
 - Reject `v0.0.0`.
 - Verify every version declaration and changelog heading matches the tag.
-- Run lint, formatting checks, type checks, tests, 100% per-file coverage, architecture checks, and builds before publishing.
+- Run lint, formatting checks, type checks, tests, the required 85% overall coverage and stricter control-specific thresholds, architecture checks, and builds before publishing.
 - Build once and publish the verified artifact.
 - Generate version and changelog changes in a reviewable release change before creating the tag. For JavaScript and TypeScript packages, prefer Changesets; use the ecosystem-equivalent maintained tool in other languages.
 - Use OIDC trusted publishing instead of long-lived registry credentials when the registry supports it.

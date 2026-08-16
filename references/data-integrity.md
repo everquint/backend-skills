@@ -66,4 +66,4 @@
 
 ## Verification
 
-Test constraints, transaction rollback, concurrency conflicts, duplicate requests, migration compatibility, resumable backfills, query bounds, tenant isolation, retention, deletion propagation, and restore procedures. Use the real database engine for integration tests. Require 100% per-file coverage for authored ORM and migration code, while separately verifying generated migrations apply successfully.
+Test constraints, transaction rollback, concurrency conflicts, duplicate requests, migration compatibility, resumable backfills, query bounds, tenant isolation, retention, deletion propagation, and restore procedures. Use the real database engine for integration tests. Include authored ORM and migration code in the 85% overall coverage gate, retain stricter coverage for security or mission-critical controls, and separately verify generated migrations apply successfully.

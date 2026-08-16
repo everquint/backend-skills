@@ -108,7 +108,7 @@ Required profile:
 - Oxfmt for formatting, configured for four-space indentation, single quotes, semicolons, and the repository's chosen line width; use two spaces for YAML.
 - TypeScript strict checking for TypeScript code. Run the full project graph without trusting stale incremental output after configuration changes.
 - Vitest for unit and integration tests unless the selected framework requires a compatible native runner.
-- V8 coverage through Vitest with 100% per-file lines, branches, functions, and statements.
+- V8 coverage through Vitest with at least 85% overall lines, branches, functions, and statements, plus the stricter security thresholds from [testing.md](testing.md).
 - Stryker for mutation testing of logic, security, money, state transitions, and other mission-critical code.
 
 - Pin Node and the package manager and commit the lockfile.
@@ -145,7 +145,7 @@ Required profile:
 - Ruff for linting and formatting, configured for four-space indentation and the repository's chosen quote and line-width policy.
 - Pyright in strict mode for static type checking. Permit a different checker only through an explicit repository decision with equivalent strictness.
 - pytest for unit and integration tests.
-- coverage.py through pytest-cov with branch measurement and 100% per-file coverage.
+- coverage.py through pytest-cov with branch measurement and at least 85% overall line and branch coverage, plus the stricter security thresholds from [testing.md](testing.md).
 - Hypothesis for property-based tests of parsers, serialization, pagination, idempotency, permission matrices, and other invariant-heavy logic.
 - The approved vulnerability scanner for the locked Python dependency graph.
 
@@ -241,9 +241,9 @@ Cargo references:
 
 ## Coverage honesty
 
-The semantic requirement is 100% execution of authored lines, statements, functions or methods, and decisions or branches. Do not claim a metric the selected language tool does not measure.
+The general requirement is at least 85% overall execution coverage for every metric the selected language tool reliably measures. Do not claim a metric the tool does not measure. Apply the stricter security and mission-critical thresholds from [testing.md](testing.md).
 
-- JavaScript/TypeScript and Python must mechanically gate all four dimensions per file.
-- Go's standard coverage is statement-oriented. Gate 100% statement coverage per package and function report, require explicit tests for every decision outcome, and use mutation testing plus review to expose missed branches. If a maintained compatible branch-coverage tool is adopted, gate it at 100% per authored file.
-- Rust coverage capabilities vary by toolchain and coverage tool. Gate every supported authored-file metric at 100%, explicitly test each decision outcome, and use mutation testing plus review rather than relabeling unsupported branch or function metrics.
-- Report tool limitations openly. A repository aggregate or a renamed metric never satisfies a per-file requirement.
+- JavaScript/TypeScript and Python must mechanically gate all four dimensions overall and apply control-specific thresholds where required.
+- Go's standard coverage is statement-oriented. Gate at least 85% overall statement coverage, require happy-path and meaningful failure-path tests for every feature and behavior-bearing public function, and use mutation testing plus review to expose weak assertions.
+- Rust coverage capabilities vary by toolchain and coverage tool. Gate at least 85% overall for every supported metric, require happy-path and meaningful failure-path tests for every feature and behavior-bearing public function, and use mutation testing plus review rather than relabeling unsupported metrics.
+- Report tool limitations openly. A renamed or unsupported metric never satisfies the requirement.

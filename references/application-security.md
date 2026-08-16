@@ -83,4 +83,4 @@ If the proxy trust configuration is absent or invalid, ignore forwarded client-I
 
 ## Verification
 
-Test spoofed forwarded headers, direct-backend access, multiple trusted and untrusted proxy hops, IPv6 forms, injection payloads, SSRF redirects and private destinations, CORS preflight, CSRF, cache headers, upload traversal and decompression, oversized inputs, enumeration, and rate limits. Require 100% branch and per-file coverage for authored security controls and use maintained dynamic or static security testing in CI where it provides reliable signal.
+Test spoofed forwarded headers, direct-backend access, multiple trusted and untrusted proxy hops, IPv6 forms, injection payloads, SSRF redirects and private destinations, CORS preflight, CSRF, cache headers, upload traversal and decompression, oversized inputs, enumeration, and rate limits. Require 100% coverage across every reliably measured metric for authored security controls and use maintained dynamic or static security testing in CI where it provides reliable signal.

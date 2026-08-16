@@ -24,7 +24,7 @@ Coverage proves that code executed; it does not prove that a test would detect w
 ## Test-driven changes
 
 - For a defect, write the smallest test that reproduces it and confirm it fails for the expected reason before changing implementation.
-- For new behavior, specify success, rejection, authorization, boundaries, and failure behavior before or alongside implementation.
+- For new behavior, get the smallest vertical slice working first, then add success and meaningful failure tests during the compliance pass. Do not let the later test phase change the intended contract silently.
 - Run the focused test while iterating, then the relevant unit, integration, feature E2E, coverage, mutation, and static gates.
 - Never weaken, delete, skip, or over-mock a valid test merely to make a change pass.
 - When a test must change because the contract changed, make the contract change explicit in documentation and review.
@@ -72,4 +72,4 @@ Use mutation testing on `logic`, authorization, tenant isolation, money, state t
 
 ## Review gate
 
-Before accepting tests, deliberately alter or remove the important behavior and confirm the relevant test fails when practical. Review the assertions, not only the coverage report. Require 100% per-file coverage as defined in [testing.md](testing.md), but reject vacuous tests even when they satisfy every percentage.
+Before accepting tests, deliberately alter or remove the important behavior and confirm the relevant test fails when practical. Review the assertions, not only the coverage report. Require at least 85% overall coverage as defined in [testing.md](testing.md), retain its stricter security thresholds, and reject vacuous tests even when they satisfy every percentage.

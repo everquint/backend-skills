@@ -45,13 +45,16 @@
 Convert work into verifiable outcomes:
 
 ```text
-1. Reproduce or specify behavior → verify with a failing or new test
-2. Implement the smallest change → verify the focused test passes
-3. Check integration and regressions → verify all relevant gates pass
+1. Specify the observable behavior → verify the acceptance target is clear
+2. Implement the smallest working change → verify the primary path directly
+3. Announce the testable milestone → invite user testing while compliance continues
+4. Add happy and failure tests, audit, and harden → verify all relevant gates pass
 ```
 
 - Define success before implementation.
 - Reproduce a reported bug before fixing it.
+- Prioritize a working vertical slice before spending time on broad audit, coverage, or compliance work.
+- Do not defer a minimum safeguard when its absence could expose secrets or tenant data, bypass authorization, corrupt data, or perform an unsafe destructive action.
 - Keep multi-step work incremental and independently verifiable.
 - Loop until the defined checks pass; do not stop at “looks correct.”
 

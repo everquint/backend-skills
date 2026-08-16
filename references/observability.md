@@ -108,4 +108,4 @@ Verify observability with tests and an integration probe:
 7. Verify graceful shutdown flushes within a bounded timeout.
 8. Confirm OpenObserve queries, dashboards, retention, access controls, and alerts work for the deployed environment.
 
-Require 100% per-file coverage for authored observability setup, processors, redaction, attribute mapping, and wrappers. Exclude upstream auto-instrumentation and generated collector code, not project-owned configuration behavior.
+Include authored observability setup, processors, redaction, attribute mapping, and wrappers in the 85% overall coverage gate. Test successful export and failure behavior; exclude upstream auto-instrumentation and generated collector code, not project-owned configuration behavior.

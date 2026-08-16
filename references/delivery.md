@@ -57,7 +57,7 @@ Use trunk-based development:
 - State the problem, approach, tests, migrations, compatibility, security impact, operational impact, observability, rollout, and rollback.
 - Link the ticket, ADRs, feature documentation, contracts, and release-note fragment.
 - Review independently on at least two axes: conformance to the requested behavior and correctness/security of the implementation.
-- Require all lint, formatting, type or static checks, unit, integration, E2E, per-file coverage, architecture, documentation, migration, secret, dependency, and supply-chain gates that apply.
+- Require all lint, formatting, type or static checks, unit, integration, E2E, overall coverage, stricter control-specific coverage, architecture, documentation, migration, secret, dependency, and supply-chain gates that apply.
 - Never merge a red, skipped, or false-green required gate.
 - Resolve review findings in code or explain concretely why no change is warranted; do not dismiss them with preference alone.
 

@@ -15,7 +15,7 @@ Apply the standard from the first commit:
 1. Initialize every project and package at `0.0.0`.
 2. Create only the required `src/logic`, `src/orm`, `src/services`, `src/restapi`, `src/mcp`, `src/workflows`, and `src/dockerfiles` directories. For TypeScript and Rust, first run the single-package versus workspace decision in [language-profiles.md](language-profiles.md) and use the pnpm- or Cargo-native layout when multiple independently deployable services are planned. Create root `debug` and `docs` only as needed. Create root `terraform` only when the user explicitly asks for Terraform.
 3. Establish the dependency direction from [architecture.md](architecture.md) before implementing the first feature.
-4. Configure the formatter, linter, type or static checker, tests, per-file coverage, architecture checks, and secret scanning before authored production code grows around missing gates.
+4. Configure the formatter, linter, type or static checker, tests, overall coverage, architecture checks, and secret scanning before authored production code grows around missing gates.
 5. Add documentation navigation, an ADR directory, and the changelog mechanism described in [documentation.md](documentation.md).
 6. Add tag-triggered package and image publication only for artifacts the repository actually publishes.
 
@@ -60,7 +60,7 @@ Automate every deterministic rule that the selected toolchain can express:
 - one class or exported function per file;
 - 200-line function ceiling and 600-line absolute maximum;
 - formatting and static-analysis errors;
-- 100% per-file line, branch, function, and statement coverage;
+- at least 85% overall coverage for every reliably measured metric, with stricter security and mission-critical thresholds;
 - documentation links and generated-contract drift;
 - version, changelog, Git tag, package, and image consistency.
 
@@ -76,7 +76,7 @@ An adoption is complete only when:
 2. A deliberate failing probe makes each critical gate fail.
 3. The same probe passes after the defect is corrected.
 4. Production consumers cannot import ORM or services directly.
-5. Coverage is enforced per authored file, not only in aggregate.
+5. Coverage is enforced at 85% or higher overall for each supported metric, with the required stricter controls configured separately.
 6. Documentation, changelog, versions, and release workflows agree.
 7. The full clean-checkout pipeline passes without local-only state or secrets.
 
