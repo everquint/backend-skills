@@ -9,6 +9,10 @@ Build backend changes around a single object-oriented business-logic core. Treat
 
 ## Load the standards
 
+- Do not preload every reference. Classify the user's request first, then read only the minimum sufficient reference files from the routes below.
+- For a narrowly scoped request, start with one matching reference. Add another only when the requested work or an observed dependency crosses into that concern.
+- Read each selected reference completely before acting on it. Do not load adjacent references merely because they may be useful.
+- Keep repository inspection equally focused: search for the files and rules relevant to the request before opening broader areas of the codebase.
 - Read [architecture.md](references/architecture.md) before designing or changing repository structure, modules, dependencies, ORM access, services, REST, MCP, or workflows.
 - Read [engineering.md](references/engineering.md) before writing or reviewing code.
 - Read [adoption.md](references/adoption.md) when initializing a repository, applying these standards to an existing repository, selecting language tooling, or building enforcement gates.
