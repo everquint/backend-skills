@@ -14,7 +14,7 @@
 
 Treat REST, MCP, webhooks, queue consumers, event subscribers, scheduled jobs, and CLI commands as thin consumers of `logic`.
 
-- Authenticate and parse the protocol at the boundary.
+- Authenticate and parse the protocol at the boundary. Anonymous access is allowed only for an explicitly documented public operation.
 - Validate the complete external shape before constructing domain input.
 - Call one or more public logic methods without reimplementing business rules.
 - Translate logic results and errors into the protocol contract.
@@ -34,6 +34,7 @@ Add `src/events`, `src/webhooks`, `src/jobs`, or `src/cli` only when the project
 ## REST conventions
 
 - Keep OpenAPI as the canonical REST contract and validate implementation drift in CI.
+- Apply authentication by default through shared middleware. Explicitly mark each intentionally public operation in OpenAPI and test that every other route rejects unauthenticated requests.
 - Use cursor pagination for mutable or large collections. Define stable ordering and opaque cursors; never expose raw database offsets or internal query state without a deliberate contract.
 - Require an idempotency key for externally retried create, payment, provisioning, or other non-repeatable mutation operations.
 - Bind the key to the authenticated principal, operation, and normalized request; return the original outcome for a replay and reject a conflicting reuse.

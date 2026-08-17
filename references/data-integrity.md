@@ -52,7 +52,8 @@
 
 - Classify stored data and record its owner, purpose, tenant boundary, retention period, and deletion behavior.
 - Collect and retain only what the feature needs.
-- Make tenant and authorization filters mandatory on every relevant query; test cross-tenant isolation at the ORM and logic boundaries.
+- Make tenant and authorization filters mandatory on every relevant query. Prefer tenant-scoped query APIs that cannot run without verified tenant context, and add tenant identity to relevant keys and constraints.
+- Test cross-tenant reads, lists, searches, writes, deletes, exports, cache lookups, and relationship traversal at the ORM and logic boundaries.
 - Define whether deletion is immediate, soft, delayed, anonymized, or legally retained. Ensure derived records, search indexes, caches, blobs, analytics, logs, and backups follow the approved policy.
 - Protect security audit records from ordinary application mutation while limiting access and retention.
 

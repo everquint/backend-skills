@@ -22,10 +22,10 @@ Require tests for every behavior-bearing production module.
 
 ## Shared feature contracts
 
-Centralize reusable test behavior under `src/tests`:
+Centralize reusable test behavior under root `tests`:
 
 ```text
-src/tests/
+tests/
 ├── shared/
 │   ├── fixtures/
 │   ├── factories/
@@ -36,6 +36,7 @@ src/tests/
 ```
 
 - Reuse fixtures, factories, assertions, and feature contracts instead of copying scenarios.
+- Keep language-native colocated unit tests and package-specific integration tests where their toolchain requires them; root `tests` owns shared support and cross-service E2E behavior.
 - Express each business rule once in logic tests.
 - Reuse a feature contract across REST, MCP, and workflows when those consumers expose equivalent behavior.
 - Keep consumer-specific protocol assertions in the consumer suite.
@@ -80,6 +81,8 @@ Apply the gate to all authored backend layers, including:
 ### REST, MCP, and workflows
 
 - Test input mapping, authentication handoff, logic invocation, output mapping, and error translation.
+- Test that every non-public operation rejects unauthenticated access and every explicitly public operation exposes only its documented anonymous behavior.
+- For multi-tenant behavior, test same-tenant success and cross-tenant denial for every supported consumer path.
 - Verify that consumers never query ORM or services directly.
 - For workflows, test sequencing, retries, timers, signals, compensation, and activity failures with the workflow test environment.
 

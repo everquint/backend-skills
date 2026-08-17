@@ -64,12 +64,12 @@ concurrency:
 
 Map Dockerfiles to image repositories deterministically:
 
-| Condition                                 | Dockerfile                                             | Image repository                       |
-| ----------------------------------------- | ------------------------------------------------------ | -------------------------------------- |
-| REST is the only deployable image         | `src/dockerfiles/rest.Dockerfile`                      | `<repo-name>`                          |
-| Repository has multiple deployable images | `src/dockerfiles/rest.Dockerfile`                      | `<repo-name>/api`                      |
-| MCP image                                 | `src/dockerfiles/mcp.Dockerfile`                       | `<repo-name>/mcp`                      |
-| Workflow image                            | `src/dockerfiles/workflows/<workflow-name>.Dockerfile` | `<repo-name>/workflow/<workflow-name>` |
+| Condition                                 | Dockerfile                                         | Image repository                       |
+| ----------------------------------------- | -------------------------------------------------- | -------------------------------------- |
+| REST is the only deployable image         | `dockerfiles/rest.Dockerfile`                      | `<repo-name>`                          |
+| Repository has multiple deployable images | `dockerfiles/rest.Dockerfile`                      | `<repo-name>/api`                      |
+| MCP image                                 | `dockerfiles/mcp.Dockerfile`                       | `<repo-name>/mcp`                      |
+| Workflow image                            | `dockerfiles/workflows/<workflow-name>.Dockerfile` | `<repo-name>/workflow/<workflow-name>` |
 
 - Derive `<repo-name>` from the canonical repository/package name, normalized for the target registry.
 - Use kebab-case workflow names.

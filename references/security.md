@@ -3,6 +3,8 @@
 ## Contents
 
 - Authorization and isolation
+- Authentication defaults
+- Multi-tenant isolation
 - User-managed secrets
 - Database storage exception
 - Passwordless authentication
@@ -20,6 +22,25 @@
 - Never trust caller-supplied identity, tenant, ownership, or role claims without verified token context.
 - Prevent existence leaks: return the approved not-found/forbidden behavior without confirming inaccessible resources.
 - Keep RBAC and tenant-isolation policy in `logic`; consumers only pass verified context and translate outcomes.
+
+## Authentication defaults
+
+- Require authentication by default for every REST route, MCP operation, workflow trigger, webhook, event consumer, job, and CLI operation.
+- Permit anonymous access only through an explicit public allowlist reviewed with the API contract. Mark public REST operations explicitly in OpenAPI instead of inferring them from missing middleware.
+- Apply authentication centrally so a newly added route cannot become public by omission. Route-level code may make access stricter, never silently weaker.
+- Keep public health or discovery responses minimal. A public route must not expose tenant data, user-specific state, secrets, internal topology, or protected mutations.
+- Treat signed webhooks, service credentials, mTLS identities, and queue identities as authenticated machine principals, not as public traffic.
+- Test that every non-public operation rejects missing, malformed, expired, revoked, and wrong-audience credentials.
+
+## Multi-tenant isolation
+
+- Determine and document the tenant-isolation model before implementing a multi-tenant API.
+- Derive the active tenant from verified server-side identity or membership data. Never trust a request body, query, path, header, MCP argument, or workflow input as authoritative tenant identity.
+- Pass verified tenant context into `logic`, reauthorize every sensitive operation, and require every tenant-owned persistence operation to include the tenant boundary.
+- Prefer tenant-scoped repository or query APIs that cannot execute without a tenant identifier. Use database row-level security, tenant-aware keys, or equivalent defense in depth where supported.
+- Include tenant identity in uniqueness constraints, cache keys, object-storage prefixes, search filters, events, jobs, workflow identifiers, and idempotency records whenever those resources are tenant-owned.
+- Return the approved not-found or forbidden result without revealing that another tenant's resource exists.
+- Test every tenant-owned read, list, search, create, update, delete, export, cache, event, and workflow path with an attempted cross-tenant access. A multi-tenant feature is incomplete until these tests pass.
 
 ## User-managed secrets
 

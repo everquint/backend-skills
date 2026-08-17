@@ -18,7 +18,9 @@ Invoke the skill explicitly as `$everquint-backend-skill`, or let the agent sele
 - REST, MCP, and Temporal workflows are protocol consumers. They never access the ORM, database, or external providers directly.
 - External connections other than the ORM live in the selected layout's core `services` module.
 - In a single package, keep protocol consumers beside the core under `src/restapi`, `src/mcp`, and `src/workflows`. In a workspace, keep them under `apps`; keep `debug`, `docs`, and opt-in `terraform` at the repository root.
+- Keep shared tests and cross-service E2E support under root `tests`, and keep image definitions under root `dockerfiles`; neither belongs under application `src`.
 - TypeScript chooses a single package or pnpm workspace based on the confirmed number of independently deployable services; each package compiles its own `src` into generated `dist`. Python and Go do not create that JavaScript output tree. Rust makes the same service-count decision for a single Cargo package or workspace and uses Cargo's generated `target` directory.
+- Authenticate every operation by default. Anonymous access requires an explicit documented public allowlist, and multi-tenant systems must enforce tenant isolation across every data path.
 - Authored backend code requires at least 85% overall coverage across supported metrics, plus meaningful happy-path and failure-path tests for every feature and behavior-bearing public function. Security and explicitly mission-critical controls retain stricter coverage requirements.
 - OpenTelemetry is mandatory for telemetry; OpenObserve is preferred as the backend.
 - Ordinary runtime errors are contained at their boundary. The process exits loudly when required infrastructure or a process invariant makes safe operation impossible.

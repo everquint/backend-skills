@@ -11,12 +11,12 @@
 
 ## Shared rules
 
-- Keep authored application code under root `src`, with `logic`, `orm`, `services`, `restapi`, `mcp`, and `workflows` as sibling modules when present. TypeScript pnpm workspaces and Rust Cargo workspaces are exceptions: they have no application code under root `src`; every member package owns its own `src`. Keep `debug`, `docs`, and opt-in `terraform` at the repository root.
+- Keep authored application code under root `src`, with `logic`, `orm`, `services`, `restapi`, `mcp`, and `workflows` as sibling modules when present. TypeScript pnpm workspaces and Rust Cargo workspaces are exceptions: they have no application code under root `src`; every member package owns its own `src`. Keep `tests`, `dockerfiles`, `debug`, `docs`, and opt-in `terraform` at the repository root.
 - Pin the runtime, package manager, formatter, linter, static analyzer, test runner, and coverage tools through the language's normal reproducible mechanism.
 - Run formatting, linting, static or type checks, tests, architecture checks, and coverage locally and in CI with warnings treated as failures.
 - Use four spaces unless the language formatter requires otherwise; Go uses `gofmt` tabs.
 - Preserve Ever Quint naming where the language profile does not override it: classes or class-equivalent exported types in PascalCase and application identifiers in camelCase. Language-native profiles, including Rust, take precedence.
-- Use commitlint for commits regardless of application language.
+- Use the language profile's Conventional Commits validator locally and in CI. Pin it through the repository's existing toolchain; do not introduce another language runtime solely for commit linting.
 - Add no second tool that owns the same concern without a documented gap and ADR.
 
 ## JavaScript and TypeScript
@@ -40,8 +40,7 @@ project/
 │   ├── services/
 │   ├── restapi/
 │   ├── mcp/
-│   ├── workflows/
-│   └── dockerfiles/
+│   └── workflows/
 ├── dist/                   # generated JavaScript; never authored
 │   ├── logic/
 │   ├── orm/
@@ -51,6 +50,8 @@ project/
 │   └── workflows/
 ├── debug/
 ├── docs/
+├── tests/
+├── dockerfiles/
 └── terraform/              # only when explicitly requested
 ```
 
@@ -87,10 +88,12 @@ project/
 │           └── dist/            # generated
 ├── debug/
 ├── docs/
+├── tests/
+├── dockerfiles/
 └── terraform/                   # only when explicitly requested
 ```
 
-- Do not put application code in root `src` or generated application output in root `dist` for a pnpm workspace. Each package owns its `src`, tests, build configuration, and generated `dist`.
+- Do not put application code in root `src` or generated application output in root `dist` for a pnpm workspace. Each package owns its `src`, package-specific tests, build configuration, and generated `dist`; root `tests` owns shared support and cross-service E2E behavior.
 - Make every app depend on the shared core package through the pnpm `workspace:` protocol. Never let core depend on an app package.
 - Keep logic, ORM, and non-database provider services in core. Keep REST, MCP, and workflow protocol handling in their owning apps.
 - Create one workflow app package per independently deployable workflow worker. Do not create app packages for workflows that always deploy as one worker.
@@ -110,6 +113,7 @@ Required profile:
 - Vitest for unit and integration tests unless the selected framework requires a compatible native runner.
 - V8 coverage through Vitest with at least 85% overall lines, branches, functions, and statements, plus the stricter security thresholds from [testing.md](testing.md).
 - Stryker for mutation testing of logic, security, money, state transitions, and other mission-critical code.
+- `@commitlint/cli` with `@commitlint/config-conventional` for commit-message validation.
 
 - Pin Node and the package manager and commit the lockfile.
 - Use ESM unless the selected runtime or framework requires CommonJS.
@@ -129,6 +133,7 @@ Required profile:
 - `go test -race ./...` for concurrency-sensitive packages and the full suite in CI when runtime cost remains acceptable.
 - Built-in fuzzing for parsers, codecs, URLs, payload guards, and other untrusted boundaries.
 - The approved vulnerability scanner for the resolved Go module graph.
+- The Go `github.com/conventionalcommit/commitlint` tool for commit-message validation.
 
 - Commit `go.mod` and `go.sum`; pin the Go toolchain version.
 - Use named receiver types to preserve the OOP logic model. Stateless collection types carry no fields; identity-bound singular types carry their identifier or context.
@@ -148,6 +153,7 @@ Required profile:
 - coverage.py through pytest-cov with branch measurement and at least 85% overall line and branch coverage, plus the stricter security thresholds from [testing.md](testing.md).
 - Hypothesis for property-based tests of parsers, serialization, pagination, idempotency, permission matrices, and other invariant-heavy logic.
 - The approved vulnerability scanner for the locked Python dependency graph.
+- Commitizen for commit-message validation with `cz check`.
 
 - Pin the Python version and use a locked, hash-verifiable dependency resolution appropriate to the selected package manager.
 - Use lowercase snake_case for importable `.py` module filenames because hyphens are invalid identifiers.
@@ -181,6 +187,7 @@ project/
 │   └── restapi/
 ├── tests/
 ├── examples/
+├── dockerfiles/
 ├── debug/
 ├── docs/
 ├── terraform/              # only when explicitly requested
@@ -209,6 +216,8 @@ project/
 │           └── src/main.rs
 ├── debug/
 ├── docs/
+├── tests/                   # shared assets and cross-service E2E support
+├── dockerfiles/
 ├── terraform/              # only when explicitly requested
 └── target/                 # generated and ignored
 ```
@@ -217,7 +226,7 @@ Do not create `project/src` for a Cargo workspace. The workspace root is not an 
 
 - Make consumer crates depend on `core`; never let `core` depend on REST, MCP, or workflow crates.
 - Add only the service crates the confirmed scope requires.
-- Keep unit tests beside their modules. In a single package, put Cargo integration tests under root `tests`; in a virtual workspace, put them under the owning crate's `tests` directory because a workspace-only root is not a package test target.
+- Keep unit tests beside their modules. In a single package, put Cargo integration tests under root `tests`. In a virtual workspace, keep root `tests` for shared assets and cross-service E2E support, and put Cargo integration-test targets under the owning crate's `tests` directory because a workspace-only root is not a package test target.
 - Put executable debug examples under the owning crate's `examples` directory. Use root `debug` for shared launch configuration and supporting material.
 - Treat `target` as Cargo-generated build and cache output, not as a clean distributable tree. Ignore it in Git and copy only the required release binaries into packages or container images.
 - Expect release binaries under `target/release` or `target/<target-triple>/release` when cross-compiling; do not hard-code one path without accounting for the build target.
@@ -232,6 +241,7 @@ Required profile:
 - Do not translate Rust identifiers to Ever Quint camelCase. Keep externally prescribed casing at serialization and protocol boundaries, mapping it explicitly to idiomatic Rust identifiers.
 - Use structs, impl blocks, traits, and associated functions to preserve the OOP domain model without imitating class inheritance.
 - Use a maintained Rust coverage tool and enforce every metric it actually supports; apply the coverage-honesty rules below.
+- Use Cocogitto for commit-message validation with `cog verify` and `cog check`.
 
 Cargo references:
 

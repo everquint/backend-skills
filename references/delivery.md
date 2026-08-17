@@ -39,10 +39,11 @@ Use trunk-based development:
 - Use `!` before `:` and a `BREAKING CHANGE:` footer for breaking API or behavior changes, including the required migration.
 - Use the body for material context and the footer for issue references, breaking-change details, and other trailers.
 - Preserve the repository's configured human authorship. Never add AI or assistant attribution, assistant `Co-authored-by` trailers, generated-by markers, or assistant signatures to commits, tags, changelog entries, pull requests, or release notes.
-- Use commitlint with `@commitlint/config-conventional` as the mandatory commit-message linter in every repository, including non-JavaScript backends. Treat it as repository tooling rather than application runtime code.
-- Run commitlint from the `commit-msg` hook against the message file so an invalid commit is rejected before it enters local history.
-- Run commitlint again in CI over every commit introduced by the pull request, using the actual merge base and head. Fetch enough Git history for that range; a shallow checkout that silently validates only one commit is a failed gate.
-- Make commitlint a required blocking check and protect its configuration and hook from unreviewed bypasses.
+- Use the Conventional Commits validator selected by [language-profiles.md](language-profiles.md). Do not add a Node toolchain to a non-JavaScript repository solely for commit-message linting.
+- In a multi-language repository, use one validator from the primary repository toolchain unless a demonstrated gap requires another; do not install competing commit linters.
+- Run the selected validator from the `commit-msg` hook against the message file so an invalid commit is rejected before it enters local history.
+- Run the same validator again in CI over every commit introduced by the pull request, using the actual merge base and head. Fetch enough Git history for that range; a shallow checkout that silently validates only one commit is a failed gate.
+- Make commit-message linting a required blocking check and protect its configuration and hook from unreviewed bypasses.
 - Require automation, dependency bots, release jobs, merge commits, and reverts to produce valid Conventional Commit messages. Configure the producer; do not exempt the author class from linting.
 - Never use `--no-verify`, disable the hook, or rewrite the CI command merely to pass an invalid message. Correct the commit message.
 - Make each commit buildable and reviewable. If an unavoidable intermediate migration cannot be deployed alone, state the dependency explicitly and keep the sequence adjacent.

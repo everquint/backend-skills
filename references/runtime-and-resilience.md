@@ -23,7 +23,10 @@
 
 Classify every infrastructure dependency as `required` or `optional` before startup behavior is implemented.
 
-- Database and Redis or Valkey are required by default under this standard.
+- Add a database, Redis, or Valkey only when the application's actual behavior needs it. Never provision one merely to satisfy a template.
+- When present, classify a database as required for every process whose declared behavior depends on its durable state.
+- Classify Redis or Valkey as required when it owns a correctness or security responsibility such as sessions, locks, idempotency, coordination, queues, or authoritative state.
+- Classify a performance-only cache as optional only when a documented degraded path preserves correctness, security, and bounded load without it.
 - A secret manager, queue, workflow system, or provider is required when the deployed process cannot perform its declared purpose safely without it.
 - An optional dependency must have an explicitly documented degraded behavior that preserves correctness and security.
 - Never mark a dependency optional merely to keep readiness green.

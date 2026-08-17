@@ -25,15 +25,15 @@ repository/
 │   ├── services/
 │   ├── restapi/
 │   ├── mcp/
-│   ├── workflows/
-│   ├── tests/
-│   └── dockerfiles/
+│   └── workflows/
+├── tests/
+├── dockerfiles/
 ├── debug/
 ├── docs/
 └── terraform/              # only when explicitly requested
 ```
 
-Add only directories required by the project. Add root `terraform` only when the user explicitly requests Terraform; never scaffold it from a general backend or deployment request. Use root `debug` only for the development adapters defined in [debugging.md](debugging.md): REST Swagger, MCP Inspector, and direct Temporal workflow execution without a Temporal server. Keep every `index.js`, `index.ts`, `__init__.py`, or language-equivalent package entrypoint limited to exports where the language uses such files. Put startup, registration, wiring, and side effects in explicitly named files. Do not invent an `index` file for Go.
+Add only directories required by the project. Keep shared tests and cross-service E2E support under root `tests`, and keep image definitions under root `dockerfiles`; neither belongs under application `src`. Add root `terraform` only when the user explicitly requests Terraform; never scaffold it from a general backend or deployment request. Use root `debug` only for the development adapters defined in [debugging.md](debugging.md): REST Swagger, MCP Inspector, and direct Temporal workflow execution without a Temporal server. Keep every `index.js`, `index.ts`, `__init__.py`, or language-equivalent package entrypoint limited to exports where the language uses such files. Put startup, registration, wiring, and side effects in explicitly named files. Do not invent an `index` file for Go.
 
 For TypeScript, ask whether more than one independently deployable service is planned. A REST-only backend uses the single-package tree above. A multi-service backend uses the pnpm workspace in [language-profiles.md](language-profiles.md), with no root application `src` or generated root `dist`; each workspace package owns those directories.
 
@@ -139,7 +139,7 @@ Apply the selected language's directory and package naming rules. TypeScript may
 Treat REST and MCP as protocol adapters:
 
 - Parse and validate protocol shape.
-- Authenticate the caller at the boundary.
+- Authenticate the caller at the boundary unless the route is explicitly allowlisted and documented as public.
 - Call a logic method.
 - Translate logic results and errors into the protocol response.
 - Never duplicate business validation or query ORM/services directly.
@@ -154,10 +154,10 @@ Group the workflow definition, its activities, and its optional package entrypoi
 
 ## Dockerfiles
 
-Keep deployable image definitions under `src/dockerfiles`:
+Keep deployable image definitions under root `dockerfiles`:
 
 ```text
-src/dockerfiles/
+dockerfiles/
 ├── rest.Dockerfile
 ├── mcp.Dockerfile
 └── workflows/

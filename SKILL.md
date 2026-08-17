@@ -54,6 +54,7 @@ For a trivial, low-risk task, compress the ceremony while preserving correctness
 ## Preserve the core boundaries
 
 - Resolve the core source root from the selected layout: `src` for a single package, `packages/core/src` for a TypeScript pnpm workspace, and `crates/core/src` for a Rust Cargo workspace.
+- Keep shared tests and cross-service E2E support under root `tests`, and keep deployable image definitions under root `dockerfiles`; never place either directory under application `src`.
 - Put all business rules under `<core-source-root>/logic`.
 - Let only `<core-source-root>/logic` access `<core-source-root>/orm` and `<core-source-root>/services`.
 - Never let REST, MCP, Temporal workflows, Temporal activities, or other consumers access the database, ORM, or external services directly.
@@ -61,6 +62,8 @@ For a trivial, low-risk task, compress the ceremony while preserving correctness
 - Keep logic public APIs object-oriented using the selected language's native constructs: use static class methods for stateless behavior where supported, and identity- or context-bound instances or receiver types for stateful behavior.
 - Use OpenTelemetry for all application telemetry and prefer OpenObserve as the observability backend.
 - Contain ordinary runtime errors at their request, message, activity, or job boundary. Crash loudly only when required infrastructure or an unrecoverable process invariant makes safe operation impossible.
+- Require authentication by default for every route and protocol operation. Permit anonymous access only through an explicit, documented public allowlist.
+- For multi-tenant systems, derive tenant context from verified identity and prevent cross-tenant access in logic, persistence, caches, storage, events, and tests.
 - Require at least 85% overall coverage for authored backend code across every metric the selected tool reliably measures. Retain 100% coverage across reliably measured metrics for authentication, authorization, RBAC, tenant isolation, secret handling, encryption, and explicitly mission-critical controls.
 - Require meaningful happy-path and failure-path tests for every feature and behavior-bearing function regardless of the measured coverage percentage.
 - Never weaken authentication, authorization, tenant isolation, secret handling, tests, lint, or coverage to make an implementation easier.
