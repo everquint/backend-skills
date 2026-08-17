@@ -19,7 +19,7 @@ Use one primary orchestrator for the complete outcome. The orchestrator must:
 - turn the outcome into a dependency graph and verifiable tasks;
 - make or obtain the architectural decisions that unblock implementation;
 - author every delegated task with explicit scope and success criteria;
-- assign models according to task risk and capability;
+- propose models according to task risk and capability and obtain user confirmation before launching agents;
 - own the shared coordination log and resolve blockers;
 - inspect every returned commit and diff instead of trusting an agent summary;
 - integrate in dependency order; and
@@ -94,6 +94,17 @@ Use the platform's direct agent messaging for urgent questions and notifications
 ## Model selection
 
 Discover the models and reasoning controls currently available before assigning work. Select by capability and task risk rather than permanently binding the skill to product names.
+
+Perform only the read-only discovery and planning needed to prepare the proposal, then show the user:
+
+- each planned agent role and task;
+- the exact proposed model and reasoning effort;
+- why that model fits the task; and
+- any meaningful quality, speed, or cost tradeoff.
+
+Wait for explicit user confirmation before creating or launching any decision, implementation, mechanical, review, or verification agent. If the user already specified the exact role-to-model mapping for the current task, treat that as confirmation and do not ask again. A general request to use the best available models still requires presenting the concrete mapping for confirmation.
+
+If a confirmed model or reasoning level is unavailable, do not substitute silently. Present the available alternatives and obtain confirmation again. If the platform cannot select models, disclose that limitation and ask whether to proceed with its default model or without delegation.
 
 Use this role hierarchy:
 
