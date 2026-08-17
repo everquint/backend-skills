@@ -1,6 +1,6 @@
 # Ever Quint Backend Skill
 
-Reusable, language-neutral backend engineering standards for Codex and other agents that support the Agent Skills format. The skill covers architecture, object-oriented business logic, ORM and service boundaries, REST, MCP, Temporal, testing, security, observability, debugging, delivery, and releases.
+Reusable, language-neutral backend engineering standards for Codex and other agents that support the Agent Skills format. The skill covers architecture, object-oriented business logic, ORM and service boundaries, REST, MCP, Temporal, testing, security, observability, debugging, parallel-agent orchestration, delivery, and releases.
 
 ## Install
 

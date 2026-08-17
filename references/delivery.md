@@ -24,6 +24,7 @@ Use trunk-based development:
 ## Worktrees and scope
 
 - Use one Git worktree per simultaneous agent or developer session. Shared working directories make branch state mutable underneath another session.
+- Follow [orchestration.md](orchestration.md) for dependency-aware parallelism, model selection, coordination logs, agent briefs, and integration ownership.
 - Verify the branch and working tree before every commit.
 - Keep one ticket or coherent outcome per branch and pull request.
 - Never use a stash as routine workflow. Preserve work explicitly in its owning worktree or commit.
