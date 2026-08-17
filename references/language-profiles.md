@@ -11,7 +11,7 @@
 
 ## Shared rules
 
-- Keep authored application code under root `src`, with `logic`, `orm`, `services`, `restapi`, `mcp`, and `workflows` as sibling modules when present. TypeScript pnpm workspaces and Rust Cargo workspaces are exceptions: they have no application code under root `src`; every member package owns its own `src`. Keep `tests`, `dockerfiles`, `debug`, `docs`, and opt-in `terraform` at the repository root.
+- Keep authored application code under root `src`, with `logic`, `orm`, `services`, `restapi`, `grpc`, `mcp`, and `workflows` as sibling modules when present. TypeScript pnpm workspaces and Rust Cargo workspaces are exceptions: they have no application code under root `src`; every member package owns its own `src`. Keep `tests`, `dockerfiles`, optional local-development `compose.yaml`, `debug`, `docs`, and required Terraform/OpenTofu configuration at the repository root.
 - Pin the runtime, package manager, formatter, linter, static analyzer, test runner, and coverage tools through the language's normal reproducible mechanism.
 - Run formatting, linting, static or type checks, tests, architecture checks, and coverage locally and in CI with warnings treated as failures.
 - Use four spaces unless the language formatter requires otherwise; Go uses `gofmt` tabs.
@@ -25,14 +25,14 @@
 
 Before scaffolding a TypeScript backend, ask the user:
 
-> Will the currently planned backend have more than one independently deployable service, such as REST API, MCP server, or independently deployed workflow worker?
+> Will the currently planned backend have more than one independently deployable service, such as REST API, gRPC server, MCP server, or independently deployed workflow worker?
 
-- If the answer is no and the backend is REST-only, use one package.
+- If the answer is no and the backend has one deployable protocol service, use one package.
 - If the answer is yes, use a pnpm workspace with one shared core package and one app package per independently deployable service.
 - If the answer is unclear, explain the two layouts and wait for confirmation. Do not choose silently.
 - Do not create a monorepo merely for tests, debug adapters, internal modules, or hypothetical future services.
 
-Use this single-package TypeScript shape for a REST-only backend, adding only modules the project needs:
+Use this single-package TypeScript shape for a backend with one deployable protocol service, adding only modules the project needs:
 
 ```text
 project/
@@ -41,6 +41,7 @@ project/
 │   ├── orm/
 │   ├── services/
 │   ├── restapi/
+│   ├── grpc/
 │   ├── mcp/
 │   └── workflows/
 ├── dist/                   # generated JavaScript; never authored
@@ -48,13 +49,14 @@ project/
 │   ├── orm/
 │   ├── services/
 │   ├── restapi/
+│   ├── grpc/
 │   ├── mcp/
 │   └── workflows/
 ├── debug/
 ├── docs/
 ├── tests/
 ├── dockerfiles/
-└── terraform/              # only when explicitly requested
+└── terraform/              # only when infrastructure as code is required
 ```
 
 Compile TypeScript from `src` into the corresponding path under `dist`: `src/logic` becomes `dist/logic`, `src/restapi` becomes `dist/restapi`, and so on. Never edit or commit generated `dist` output unless the repository's distribution model explicitly requires committed build artifacts.
@@ -79,6 +81,10 @@ project/
 │   │   ├── package.json
 │   │   ├── src/
 │   │   └── dist/                # generated
+│   ├── grpc/
+│   │   ├── package.json
+│   │   ├── src/
+│   │   └── dist/                # generated
 │   ├── mcp/
 │   │   ├── package.json
 │   │   ├── src/
@@ -92,12 +98,12 @@ project/
 ├── docs/
 ├── tests/
 ├── dockerfiles/
-└── terraform/                   # only when explicitly requested
+└── terraform/                   # only when infrastructure as code is required
 ```
 
 - Do not put application code in root `src` or generated application output in root `dist` for a pnpm workspace. Each package owns its `src`, package-specific tests, build configuration, and generated `dist`; root `tests` owns shared support and cross-service E2E behavior.
 - Make every app depend on the shared core package through the pnpm `workspace:` protocol. Never let core depend on an app package.
-- Keep logic, ORM, and non-database provider services in core. Keep REST, MCP, and workflow protocol handling in their owning apps.
+- Keep logic, ORM, and non-database provider services in core. Keep REST, gRPC, MCP, and workflow protocol handling in their owning apps.
 - Create one workflow app package per independently deployable workflow worker. Do not create app packages for workflows that always deploy as one worker.
 - Add only the app packages required by the confirmed scope.
 - Keep the root package private and limited to workspace orchestration, shared tooling, and repository-wide commands.
@@ -170,11 +176,12 @@ Required profile:
 
 Before scaffolding a Rust backend, ask the user:
 
-> Will the currently planned backend have more than one independently deployable service, such as REST API, MCP server, or independently deployed workflow worker?
+> Will the currently planned backend have more than one independently deployable service, such as REST API, gRPC server, MCP server, or independently deployed workflow worker?
 
-- If the answer is no and the backend is REST-only, use one Cargo package.
+- If the answer is no and the backend has one deployable protocol service, use one Cargo package.
 - If the answer is yes, use a Cargo workspace with one shared core crate and one crate per independently deployable service.
-- If the answer is unclear, explain the two layouts and wait for confirmation. Do not choose silently.
+- If the answer is unclear and a user channel exists, explain the two layouts and wait for confirmation. Do not choose silently.
+- If no user channel exists, prefer a Cargo workspace monorepo, record the assumption and reason in the implementation notes or ADR, and flag it for human review. Do not stall a batch, CI, or delegated run solely because the layout question cannot be asked.
 - Do not create a workspace merely for tests, examples, debug runners, internal modules, or hypothetical future services.
 
 ### Rust guidance prerequisites
@@ -188,7 +195,7 @@ Before implementing or reviewing non-trivial Rust:
 5. Do not install, clone, or update `rust-skills` without user confirmation. If it is unavailable, say that it could not be applied and ask whether the user wants it installed or supplied; never claim it was used.
 6. Apply all tool and dependency recommendations from `rust-skills` through this skill's existing confirmation, architecture, security, and simplicity rules. Do not adopt a recommendation blindly when it conflicts with the repository's requirements.
 
-Use this single-package layout for a REST-only backend:
+Use this single-package layout for a backend with one deployable protocol service:
 
 ```text
 project/
@@ -200,13 +207,13 @@ project/
 │   ├── logic/
 │   ├── orm/
 │   ├── services/
-│   └── restapi/
+│   └── <consumer>/         # restapi, grpc, mcp, or workflows as required
 ├── tests/
 ├── examples/
 ├── dockerfiles/
 ├── debug/
 ├── docs/
-├── terraform/              # only when explicitly requested
+├── terraform/              # only when infrastructure as code is required
 └── target/                 # generated and ignored
 ```
 
@@ -225,6 +232,8 @@ project/
 │   │       └── services/
 │   ├── restapi/
 │   │   └── src/main.rs
+│   ├── grpc/
+│   │   └── src/main.rs
 │   ├── mcp/
 │   │   └── src/main.rs
 │   └── workflows/
@@ -234,13 +243,13 @@ project/
 ├── docs/
 ├── tests/                   # shared assets and cross-service E2E support
 ├── dockerfiles/
-├── terraform/              # only when explicitly requested
+├── terraform/              # only when infrastructure as code is required
 └── target/                 # generated and ignored
 ```
 
 Do not create `project/src` for a Cargo workspace. The workspace root is not an application package; each member under `crates` keeps its own Cargo-standard `src` directory.
 
-- Make consumer crates depend on `core`; never let `core` depend on REST, MCP, or workflow crates.
+- Make consumer crates depend on `core`; never let `core` depend on REST, gRPC, MCP, or workflow crates.
 - Add only the service crates the confirmed scope requires.
 - Keep unit tests beside their modules. In a single package, put Cargo integration tests under root `tests`. In a virtual workspace, keep root `tests` for shared assets and cross-service E2E support, and put Cargo integration-test targets under the owning crate's `tests` directory because a workspace-only root is not a package test target.
 - Put executable debug examples under the owning crate's `examples` directory. Use root `debug` for shared launch configuration and supporting material.

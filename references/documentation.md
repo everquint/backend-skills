@@ -29,7 +29,7 @@ repository/
 
 - Use `index.md` as a short navigation page to canonical documents and the root changelog.
 - Use `architecture` for the system overview, module boundaries, dependency flow, diagrams, and external integrations.
-- Use `api` for REST/OpenAPI contracts, MCP tools and resources, workflow interfaces, authentication, and error conventions.
+- Use `api` for REST/OpenAPI contracts, gRPC/Protocol Buffers contracts, MCP tools and resources, workflow interfaces, authentication, and error conventions.
 - Use `features` for user-visible behavior, business rules, permissions, and important workflows, organized by feature.
 - Use `data` for data models, relationships, migrations, retention, and consistency rules.
 - Use `security` for the threat model, authentication, authorization, RBAC, tenant isolation, secrets, and incident considerations.
@@ -96,6 +96,7 @@ Include:
 
 - Document public inputs, outputs, errors, authentication, authorization, pagination, idempotency, rate limits, and compatibility expectations.
 - Keep HTTP contracts in OpenAPI where applicable.
+- Keep gRPC contracts in Protocol Buffers and document compatibility, authentication, deadlines, streaming, and error conventions.
 - Document MCP tools, resources, prompts, scopes, and error behavior without duplicating business rules.
 - Document workflow triggers, signals, queries, activities, retry behavior, timeouts, and compensation at the contract level.
 - Link feature documentation to relevant ADRs, API contracts, data models, runbooks, and changelog entries.

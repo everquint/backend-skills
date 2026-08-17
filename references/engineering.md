@@ -119,4 +119,4 @@ Apply SOLID, DRY, and KISS pragmatically:
 - Represent expected business failures as explicit logic-layer errors.
 - Never swallow exceptions silently.
 - Preserve useful causal context without leaking secrets or sensitive data.
-- Let REST, MCP, and workflows translate logic errors into their protocol-specific forms.
+- Let REST, gRPC, MCP, and workflows translate logic errors into their protocol-specific forms.

@@ -13,7 +13,7 @@
 
 ## Boundary security
 
-- Treat every REST body, header, query, path parameter, cookie, MCP argument, event, webhook, file, provider response, and database value originating outside the trust boundary as untrusted.
+- Treat every REST body, header, query, path parameter, cookie, gRPC message or metadata value, MCP argument, event, webhook, file, provider response, and database value originating outside the trust boundary as untrusted.
 - Parse through an explicit schema before use. Apply length, range, format, count, nesting-depth, and total-size limits before expensive processing.
 - Authenticate every operation at the protocol boundary unless it is explicitly allowlisted and documented as public. Authorize again in `logic` immediately before sensitive action.
 - Keep authorization independent of client-controlled IP, headers, roles, tenant identifiers, feature flags, or UI state.

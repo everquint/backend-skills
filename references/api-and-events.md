@@ -5,6 +5,7 @@
 - Consumer boundaries
 - Validation and errors
 - REST conventions
+- gRPC conventions
 - MCP conventions
 - Events, queues, webhooks, jobs, and CLI
 - Compatibility
@@ -12,7 +13,9 @@
 
 ## Consumer boundaries
 
-Treat REST, MCP, webhooks, queue consumers, event subscribers, scheduled jobs, and CLI commands as thin consumers of `logic`.
+Treat REST, gRPC, MCP, webhooks, queue consumers, event subscribers, scheduled jobs, and CLI commands as thin consumers of `logic`.
+
+Do not introduce GraphQL. If an existing contract or explicit requirement makes GraphQL unavoidable, explain the query-cost, performance, caching, authorization, and operational tradeoffs and require user confirmation before implementing or extending it.
 
 - Authenticate and parse the protocol at the boundary. Anonymous access is allowed only for an explicitly documented public operation.
 - Validate the complete external shape before constructing domain input.
@@ -43,6 +46,15 @@ Add `src/events`, `src/webhooks`, `src/jobs`, or `src/cli` only when the project
 - Return retry guidance only when retrying is safe.
 - Version only when compatibility cannot be preserved. Prefer additive changes and explicit deprecation with a published removal date.
 
+## gRPC conventions
+
+- Treat gRPC services as thin protocol adapters with the same authentication, authorization handoff, validation, logic invocation, error translation, limits, observability, and no-direct-ORM-or-services rules as REST.
+- Keep Protocol Buffers as the canonical gRPC contract and verify generated-code and implementation drift in CI.
+- Preserve field numbers forever after publication. Reserve removed field numbers and names; never reuse them for a different meaning.
+- Map logic errors to stable gRPC status codes and safe structured details without exposing internal causes or authorization reasoning.
+- Define deadlines, message-size limits, streaming backpressure, cancellation, retry safety, and compatibility expectations explicitly.
+- Apply authentication by default through shared interceptors and test every intentionally public RPC as an explicit exception.
+
 ## MCP conventions
 
 - Treat MCP tool and resource schemas as contracts, not as substitutes for logic validation.
@@ -71,4 +83,4 @@ Add `src/events`, `src/webhooks`, `src/jobs`, or `src/cli` only when the project
 
 ## Verification
 
-Use shared feature contracts to prove equivalent behavior across REST, MCP, events, webhooks, jobs, and CLI. Test each consumer's happy path and meaningful failures, including malformed data, stable errors, authorization, limits, idempotent replay, duplicate and out-of-order delivery, retry exhaustion, dead-letter replay, webhook forgery, and compatibility. Include every authored consumer in the 85% overall coverage gate and retain stricter coverage for security or mission-critical controls.
+Use shared feature contracts to prove equivalent behavior across REST, gRPC, MCP, events, webhooks, jobs, and CLI. Test each consumer's happy path and meaningful failures, including malformed data, stable errors, authorization, limits, idempotent replay, duplicate and out-of-order delivery, retry exhaustion, dead-letter replay, webhook forgery, and compatibility. Include every authored consumer in the 85% overall coverage gate and retain stricter coverage for security or mission-critical controls.

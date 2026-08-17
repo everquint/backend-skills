@@ -33,7 +33,7 @@ Coverage proves that code executed; it does not prove that a test would detect w
 
 - Prefer one strong assertion over many incidental assertions, while checking every externally meaningful effect.
 - Assert negative behavior: forbidden data is not returned, unauthorized state is not mutated, secrets are not logged, and duplicate work is not performed.
-- Keep logic tests exhaustive around business decisions. Keep REST, MCP, workflow, event, ORM, service, and debug tests focused on their boundary responsibilities.
+- Keep logic tests exhaustive around business decisions. Keep REST, gRPC, MCP, workflow, event, ORM, service, and debug tests focused on their boundary responsibilities.
 - Use the real database engine, Temporal test environment, provider emulator, or protocol transport when an in-memory mock cannot prove compatibility.
 - Mock at stable owned boundaries, not inside the unit being tested. A mock that repeats the implementation's assumptions can make the same mistake pass twice.
 

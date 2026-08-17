@@ -1,6 +1,6 @@
 # Ever Quint Backend Skill
 
-Reusable, language-neutral backend engineering standards for Codex and other agents that support the Agent Skills format. The skill covers architecture, object-oriented business logic, ORM and service boundaries, REST, MCP, Temporal, testing, security, observability, debugging, parallel-agent orchestration, delivery, and releases.
+Reusable, language-neutral backend engineering standards for Codex and other agents that support the Agent Skills format. The skill covers architecture, object-oriented business logic, ORM and service boundaries, REST, gRPC, MCP, Temporal, testing, security, observability, debugging, parallel-agent orchestration, delivery, and releases.
 
 ## Install
 
@@ -15,12 +15,16 @@ Invoke the skill explicitly as `$everquint-backend-skill`, or let the agent sele
 ## Core standards
 
 - Business behavior belongs in the selected layout's core `logic` module and follows object-oriented design.
-- REST, MCP, and Temporal workflows are protocol consumers. They never access the ORM, database, or external providers directly.
+- REST, gRPC, MCP, and Temporal workflows are protocol consumers. They never access the ORM, database, or external providers directly.
 - External connections other than the ORM live in the selected layout's core `services` module.
-- In a single package, keep protocol consumers beside the core under `src/restapi`, `src/mcp`, and `src/workflows`. In a workspace, keep them under `apps`; keep `debug`, `docs`, and opt-in `terraform` at the repository root.
+- In a single package, keep protocol consumers beside the core under `src/restapi`, `src/grpc`, `src/mcp`, and `src/workflows`. In a workspace, keep them under `apps`; keep `debug`, `docs`, and required Terraform/OpenTofu configuration at the repository root.
 - Keep shared tests and cross-service E2E support under root `tests`, and keep image definitions under root `dockerfiles`; neither belongs under application `src`.
 - TypeScript chooses a single package or pnpm workspace based on the confirmed number of independently deployable services; each package compiles its own `src` into generated `dist`. Python and Go do not create that JavaScript output tree. Rust makes the same service-count decision for a single Cargo package or workspace and uses Cargo's generated `target` directory.
 - Non-trivial Rust work consults task-relevant stable Rust Book chapters and selectively applies `rust-skills`; the pinned toolchain and official Rust documentation remain authoritative.
+- In non-interactive Rust work, an unclear layout defaults to a Cargo workspace monorepo and records the assumption for review.
+- Web applications use secure cookie sessions; native mobile and desktop applications use individually issued API credentials, never a shared key embedded in a distributed client.
+- New application-owned identifiers default to ULID in non-interactive work, UUID remains available for interoperability or version-specific needs, and all stored or transmitted timestamps use UTC.
+- Local external dependencies use one shared root Docker Compose stack. Infrastructure as code is created only when required and uses Terraform or OpenTofu.
 - Authenticate every operation by default. Anonymous access requires an explicit documented public allowlist, and multi-tenant systems must enforce tenant isolation across every data path.
 - Authored backend code requires at least 85% overall coverage across supported metrics, plus meaningful happy-path and failure-path tests for every feature and behavior-bearing public function. Security and explicitly mission-critical controls retain stricter coverage requirements.
 - Container-backed tests share one instance of each required service across the test run; they never create PostgreSQL, Redis/Valkey, or Temporal containers per test, worker, suite, worktree, or agent.

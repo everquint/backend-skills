@@ -8,7 +8,7 @@
 - Relationships and navigation
 - ORM and stored naming
 - Services
-- REST, MCP, and workflows
+- REST, gRPC, MCP, and workflows
 - Dockerfiles
 - Naming and formatting
 
@@ -24,18 +24,20 @@ repository/
 │   ├── orm/
 │   ├── services/
 │   ├── restapi/
+│   ├── grpc/
 │   ├── mcp/
 │   └── workflows/
 ├── tests/
 ├── dockerfiles/
+├── compose.yaml            # only when local external dependencies are required
 ├── debug/
 ├── docs/
-└── terraform/              # only when explicitly requested
+└── terraform/              # only when infrastructure as code is required
 ```
 
 Add only directories required by the project. Keep shared tests and cross-service E2E support under root `tests`, and keep image definitions under root `dockerfiles`; neither belongs under application `src`. Add root `terraform` only when the user explicitly requests Terraform; never scaffold it from a general backend or deployment request. Use root `debug` only for the development adapters defined in [debugging.md](debugging.md): REST Swagger, MCP Inspector, and direct Temporal workflow execution without a Temporal server. Keep every `index.js`, `index.ts`, `__init__.py`, or language-equivalent package entrypoint limited to exports where the language uses such files. Put startup, registration, wiring, and side effects in explicitly named files. Do not invent an `index` file for Go.
 
-For TypeScript, ask whether more than one independently deployable service is planned. A REST-only backend uses the single-package tree above. A multi-service backend uses the pnpm workspace in [language-profiles.md](language-profiles.md), with no root application `src` or generated root `dist`; each workspace package owns those directories.
+For TypeScript, ask whether more than one independently deployable service is planned. A backend with one deployable protocol service uses the single-package tree above. A multi-service backend uses the pnpm workspace in [language-profiles.md](language-profiles.md), with no root application `src` or generated root `dist`; each workspace package owns those directories.
 
 For Rust, preserve these ownership boundaries through Cargo packages rather than forcing the generic tree. Ask whether the planned backend has more than one independently deployable service, then follow the single-package or workspace layout in [language-profiles.md](language-profiles.md). A Rust workspace has no root `src`; each member crate has its own `crates/<crate-name>/src`.
 
@@ -47,6 +49,7 @@ Enforce this direction:
 
 ```text
 restapi ────┐
+grpc ───────┤
 mcp ────────┼──> logic ──┬──> orm
 workflows ──┘            └──> services
 ```
@@ -54,9 +57,9 @@ workflows ──┘            └──> services
 - Put all application and business behavior in `logic`.
 - Allow only `logic` to query or mutate `orm`.
 - Allow only `logic` to call external integrations in `services`.
-- Forbid REST, MCP, workflows, activities, scheduled jobs, webhooks, and CLI consumers from accessing ORM models, database clients, provider SDKs, or services directly.
+- Forbid REST, gRPC, MCP, workflows, activities, scheduled jobs, webhooks, and CLI consumers from accessing ORM models, database clients, provider SDKs, or services directly.
 - Add or reuse a logic method whenever a consumer needs data or an external action. Do not create convenience bypasses.
-- Keep ORM and services unaware of REST, MCP, and workflows.
+- Keep ORM and services unaware of REST, gRPC, MCP, and workflows.
 - Enforce boundaries with language-appropriate import rules or architecture tests.
 
 ## Logic modules
@@ -132,11 +135,11 @@ Apply the selected language's directory and package naming rules. TypeScript may
 - Keep business policy in `logic`; services implement integration capabilities only.
 - Add only providers the feature actually needs. Do not introduce speculative abstractions for hypothetical providers.
 - Keep OpenTelemetry SDK initialization, exporters, resource attributes, propagation, and shutdown under `services/open-telemetry`. Prefer exporting through an OpenTelemetry Collector to OpenObserve instead of importing an OpenObserve-specific SDK throughout the application.
-- Treat automatic protocol, ORM, and provider instrumentation as cross-cutting infrastructure, not a consumer bypass. REST, MCP, and workflows may be wrapped by shared instrumentation but must not call provider exporters or observability backends directly.
+- Treat automatic protocol, ORM, and provider instrumentation as cross-cutting infrastructure, not a consumer bypass. REST, gRPC, MCP, and workflows may be wrapped by shared instrumentation but must not call provider exporters or observability backends directly.
 
-## REST, MCP, and workflows
+## REST, gRPC, MCP, and workflows
 
-Treat REST and MCP as protocol adapters:
+Treat REST, gRPC, and MCP as protocol adapters:
 
 - Parse and validate protocol shape.
 - Authenticate the caller at the boundary unless the route is explicitly allowlisted and documented as public.
@@ -159,12 +162,14 @@ Keep deployable image definitions under root `dockerfiles`:
 ```text
 dockerfiles/
 ├── rest.Dockerfile
+├── grpc.Dockerfile
 ├── mcp.Dockerfile
 └── workflows/
     └── <workflow-name>.Dockerfile
 ```
 
 - Create `rest.Dockerfile` when the project exposes REST.
+- Create `grpc.Dockerfile` when the project exposes a separately deployable gRPC server.
 - Create `mcp.Dockerfile` when the project exposes a separately deployable MCP server.
 - Create one workflow Dockerfile per independently deployable Temporal worker. Use the workflow's kebab-case name as the filename.
 - Keep the repository root as the default build context unless the project has a demonstrated reason for a narrower context.

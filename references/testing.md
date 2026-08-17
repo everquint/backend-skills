@@ -40,7 +40,7 @@ tests/
 - Reuse fixtures, factories, assertions, and feature contracts instead of copying scenarios.
 - Keep language-native colocated unit tests and package-specific integration tests where their toolchain requires them; root `tests` owns shared support and cross-service E2E behavior.
 - Express each business rule once in logic tests.
-- Reuse a feature contract across REST, MCP, and workflows when those consumers expose equivalent behavior.
+- Reuse a feature contract across REST, gRPC, MCP, and workflows when those consumers expose equivalent behavior.
 - Keep consumer-specific protocol assertions in the consumer suite.
 - Allow test infrastructure to seed or inspect the database through dedicated fixtures; never use that as precedent for production consumer code.
 
@@ -80,6 +80,7 @@ Apply the gate to all authored backend layers, including:
 - `src/orm`
 - `src/services`
 - `src/restapi`
+- `src/grpc`
 - `src/mcp`
 - `src/workflows`
 - `debug`
@@ -101,7 +102,7 @@ Apply the gate to all authored backend layers, including:
 - Test every public method and every decision branch.
 - Prefer real domain values and focused fakes for ORM or service boundaries.
 
-### REST, MCP, and workflows
+### REST, gRPC, MCP, and workflows
 
 - Test input mapping, authentication handoff, logic invocation, output mapping, and error translation.
 - Test that every non-public operation rejects unauthenticated access and every explicitly public operation exposes only its documented anonymous behavior.
@@ -126,7 +127,7 @@ Apply the gate to all authored backend layers, including:
 ### Observability
 
 - Test authored span, metric, and structured-log attributes without requiring a live OpenObserve instance.
-- Verify trace-context propagation across REST, MCP, workflows, activities, logic, ORM, and service boundaries where applicable.
+- Verify trace-context propagation across REST, gRPC, MCP, workflows, activities, logic, ORM, and service boundaries where applicable.
 - Test redaction and confirm errors, events, logs, spans, baggage, and metric labels contain no secrets or prohibited personal data.
 - Test exporter failure and shutdown behavior without making business operations depend on telemetry availability.
 

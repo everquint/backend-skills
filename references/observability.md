@@ -39,13 +39,13 @@ src/services/open-telemetry/
 
 Keep SDK initialization, resource attributes, exporters, processors, propagators, sampling, flush, and shutdown there. Keep `index` export-only; start telemetry from an explicitly named application bootstrap file before loading instrumented libraries.
 
-Prefer an OpenTelemetry Collector between applications and OpenObserve. Configure collector pipelines outside business logic. Never import an OpenObserve client throughout REST, MCP, workflows, logic, ORM, or provider services.
+Prefer an OpenTelemetry Collector between applications and OpenObserve. Configure collector pipelines outside business logic. Never import an OpenObserve client throughout REST, gRPC, MCP, workflows, logic, ORM, or provider services.
 
 Automatic instrumentation and shared middleware may wrap protocol handlers, ORM clients, and provider clients. This is a cross-cutting infrastructure concern, not permission for handlers to call general services or databases directly.
 
 ## Signals and instrumentation
 
-Instrument every meaningful request or job across REST, MCP, Temporal workflows and activities, logic, ORM, and external services.
+Instrument every meaningful request or job across REST, gRPC, MCP, Temporal workflows and activities, logic, ORM, and external services.
 
 - Use standard semantic conventions supported by the pinned OpenTelemetry version.
 - Add manual spans for meaningful business operations, not every private function.

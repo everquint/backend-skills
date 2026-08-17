@@ -4,6 +4,7 @@
 
 - Purpose and structure
 - REST Swagger server
+- gRPC inspection
 - MCP Inspector
 - Temporal workflow direct runner
 - Boundaries and safety
@@ -18,6 +19,9 @@ debug/
 ├── rest/
 │   ├── swagger-server.ts
 │   └── index.ts
+├── grpc/
+│   ├── grpc-inspector.ts
+│   └── index.ts
 ├── mcp/
 │   ├── mcp-inspector.ts
 │   └── index.ts
@@ -31,7 +35,7 @@ debug/
 
 Create only the adapters required by the repository. Keep every `index` export-only. Put startup and command-line behavior in explicitly named files. Follow the language's file-extension and naming constraints while preserving the same structure.
 
-Debug adapters are consumers. They may invoke REST, MCP, workflows, activities, or `logic` through supported public entrypoints. They must never access ORM, database clients, provider services, or vendor SDKs directly.
+Debug adapters are consumers. They may invoke REST, gRPC, MCP, workflows, activities, or `logic` through supported public entrypoints. They must never access ORM, database clients, provider services, or vendor SDKs directly.
 
 ## REST Swagger server
 
@@ -46,6 +50,16 @@ Provide a development-only Swagger server for every REST application.
 - Fail startup when the OpenAPI document is missing or invalid; never show an empty UI as a successful debug server.
 
 The Swagger server may host documentation and proxy or send HTTP requests. It must not invoke ORM or logic as a private shortcut around the REST handler.
+
+## gRPC inspection
+
+Provide a development launcher or configuration for `grpcurl`, `grpcui`, or an equivalent maintained gRPC inspection tool whenever the repository exposes gRPC.
+
+- Connect to the actual local gRPC server and canonical Protocol Buffers or descriptor set.
+- Exercise the same interceptors, authentication, validation, handlers, and logic calls used in deployment.
+- Enable server reflection only in explicitly allowed local or development environments unless production reflection is an intentional reviewed requirement.
+- Default to loopback, synthetic credentials, bounded messages, and non-production endpoints.
+- Do not build a custom gRPC inspection UI when a maintained standard tool satisfies the requirement.
 
 ## MCP Inspector
 
@@ -83,7 +97,7 @@ Direct execution is a developer feedback tool, not a Temporal emulator. It does 
 
 - Mark every debug entrypoint as development-only and fail closed outside an explicitly allowed local or development environment.
 - Bind debug servers to loopback by default. Require an explicit, reviewed configuration to expose them on another interface.
-- Never deploy root `debug` in REST, MCP, or workflow production images.
+- Never deploy root `debug` in REST, gRPC, MCP, or workflow production images.
 - Never disable or bypass authentication or authorization against shared or production data.
 - If a local authentication shortcut is required, restrict it to synthetic local identities and make production activation impossible by construction.
 - Apply OpenTelemetry instrumentation and secret redaction to debug executions using the same shared facilities as production.
@@ -94,7 +108,7 @@ Direct execution is a developer feedback tool, not a Temporal emulator. It does 
 Include authored root `debug` code in the 85% overall coverage gate and test each adapter's happy and failure paths.
 
 - Unit-test configuration, input validation, launch commands, local activity substitution, failures, and environment guards.
-- Add smoke tests that start the Swagger server and MCP server on ephemeral local ports.
+- Add smoke tests that start the Swagger server, gRPC server, and MCP server on ephemeral local ports when those protocols exist.
 - Compare direct workflow-runner outcomes with Temporal test-environment outcomes for representative feature contracts.
-- Keep feature-level E2E tests for REST, MCP, and Temporal separately; debug adapters do not replace deployed-path tests.
+- Keep feature-level E2E tests for REST, gRPC, MCP, and Temporal separately; debug adapters do not replace deployed-path tests.
 - Document one command for starting each adapter, its required local dependencies, safe example inputs, and the limitations of direct Temporal execution under `docs/development`.
