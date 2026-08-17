@@ -64,14 +64,15 @@ concurrency:
 
 Map Dockerfiles to image repositories deterministically:
 
-| Condition                                 | Dockerfile                                         | Image repository                       |
-| ----------------------------------------- | -------------------------------------------------- | -------------------------------------- |
-| REST is the only deployable image         | `dockerfiles/rest.Dockerfile`                      | `<repo-name>`                          |
-| Repository has multiple deployable images | `dockerfiles/rest.Dockerfile`                      | `<repo-name>/api`                      |
-| MCP image                                 | `dockerfiles/mcp.Dockerfile`                       | `<repo-name>/mcp`                      |
-| Workflow image                            | `dockerfiles/workflows/<workflow-name>.Dockerfile` | `<repo-name>/workflow/<workflow-name>` |
+| Deployable image | Dockerfile                                         | Flattened image repository             |
+| ---------------- | -------------------------------------------------- | -------------------------------------- |
+| REST API         | `dockerfiles/rest.Dockerfile`                      | `api-<repo-name>`                      |
+| gRPC API         | `dockerfiles/grpc.Dockerfile`                      | `grpc-<repo-name>`                     |
+| MCP server       | `dockerfiles/mcp.Dockerfile`                       | `mcp-<repo-name>`                      |
+| Workflow worker  | `dockerfiles/workflows/<workflow-name>.Dockerfile` | `workflow-<repo-name>-<workflow-name>` |
 
-- Derive `<repo-name>` from the canonical repository/package name, normalized for the target registry.
+- Derive `<repo-name>` from the canonical repository/package name without its owner or registry namespace, normalized for the target registry.
+- Keep the image repository component flat. Do not encode service or workflow hierarchy with additional `/` path segments.
 - Use kebab-case workflow names.
 - Do not create a separate workflow image unless the worker is independently deployable.
 
@@ -88,10 +89,11 @@ Map Dockerfiles to image repositories deterministically:
 Example multi-image release for Git tag `v1.2.3`:
 
 ```text
-<repo-name>/api:v1.2.3
-<repo-name>/mcp:v1.2.3
-<repo-name>/workflow/project-onboarding:v1.2.3
-<repo-name>/workflow/billing-sync:v1.2.3
+api-<repo-name>:v1.2.3
+grpc-<repo-name>:v1.2.3
+mcp-<repo-name>:v1.2.3
+workflow-<repo-name>-project-onboarding:v1.2.3
+workflow-<repo-name>-billing-sync:v1.2.3
 ```
 
 ## Release verification

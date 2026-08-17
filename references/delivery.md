@@ -14,6 +14,7 @@
 Use trunk-based development:
 
 - Keep one long-lived protected default branch.
+- For a brand-new repository with no initial commit, create the first commit as the coherent project initialization defined in [adoption.md](adoption.md); never create an empty placeholder commit merely to establish a default branch.
 - Create every change from the current default branch on a short-lived branch.
 - Name branches `<type>/<ticket>-<kebab-case-slug>` when a ticket exists and `<type>/<kebab-case-slug>` otherwise.
 - Use conventional types such as `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `build`, `ci`, and `revert`.

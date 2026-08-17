@@ -10,16 +10,20 @@
 
 ## Greenfield repositories
 
-Apply the standard from the first commit:
+Make the first commit a coherent project initialization. Do not create an empty repository commit or placeholder-only commit. Include the initial version, selected package or build files, applicable quality configuration, and the smallest real project structure required by the confirmed scope; apply normal branch and pull-request rules after this bootstrap commit.
+
+Apply the standard from that project-initialization commit:
 
 1. Initialize every project and package at `0.0.0`.
-2. Create only the required application modules under the selected language's source root. Keep shared tests under root `tests` and image definitions under root `dockerfiles`. For TypeScript and Rust, first run the single-package versus workspace decision in [language-profiles.md](language-profiles.md) and use the pnpm- or Cargo-native layout when multiple independently deployable services are planned. Create root `debug` and `docs` only as needed. Create root `terraform` only when the user explicitly asks for Terraform.
+2. Create only the required application modules under the selected language's source root. Keep shared tests under root `tests` and image definitions under root `dockerfiles`. For TypeScript and Rust, first run the single-package versus workspace decision in [language-profiles.md](language-profiles.md) and use the pnpm- or Cargo-native layout when multiple independently deployable services are planned. Create root `debug` and `docs` only as needed. Create root `terraform` only when infrastructure as code is actually required, using Terraform or OpenTofu as defined in [deployment.md](deployment.md).
 3. Establish the dependency direction from [architecture.md](architecture.md) before implementing the first feature.
 4. Configure the formatter, linter, type or static checker, tests, overall coverage, architecture checks, and secret scanning before authored production code grows around missing gates.
 5. Add documentation navigation, an ADR directory, and the changelog mechanism described in [documentation.md](documentation.md).
 6. Add tag-triggered package and image publication only for artifacts the repository actually publishes.
 
 Do not prebuild empty provider abstractions, repositories, services, protocols, workflows, or factories. Add a boundary when the first real dependency needs it.
+
+When local development needs PostgreSQL, Redis or Valkey, Temporal, an OpenTelemetry Collector, or another external dependency, maintain one root `compose.yaml` using Docker Compose. Start one shared container per required service for the repository and let test processes and worktrees use logical isolation inside it; never create a Compose project or dependency stack per test, worker, feature, worktree, or agent. Add only services the application actually needs, pin reviewed images, use health checks, keep data and credentials development-only, and document the startup, migration, reset, and shutdown commands under `docs/development`.
 
 ## Existing repositories
 
