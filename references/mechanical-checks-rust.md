@@ -6,7 +6,7 @@ Use this reference only for Rust enforcement work.
 
 - Prefer Cargo tests, the selected web or gRPC framework's in-process test facilities, compiler visibility, Clippy, `cargo-llvm-cov`, and the OpenTelemetry SDK's test facilities.
 - Before adding framework middleware, `tower-http`, `trybuild`, telemetry-test helpers, rate-limit crates, or another enforcement dependency, show the user the exact maintained crate, pinned version strategy, commands, and why existing facilities are insufficient. Wait for confirmation.
-- The mandatory Rust profile tools already selected in [language-profiles.md](language-profiles.md) do not require another tool-choice discussion, but their versions and installation method must remain reproducibly pinned.
+- The mandatory Rust profile tools already selected in [language-rust.md](language-rust.md) do not require another tool-choice discussion, but their versions and installation method must remain reproducibly pinned.
 - If no user channel exists, use an already installed, standard-library, or framework-native mechanism. Otherwise record the missing gate as a blocker; never add a crate silently or claim the check ran.
 
 ## Required checks

@@ -31,6 +31,7 @@ Invoke the skill explicitly as `$everquint-backend-skill`, or let the agent sele
 - Container-backed tests share one instance of each required service across the test run; they never create PostgreSQL, Redis/Valkey, or Temporal containers per test, worker, suite, worktree, or agent.
 - Code explains itself by default; comments exist only for necessary non-obvious intent or constraints. Repository hooks and commit validators stay language-native and require user confirmation before installation.
 - Strong mechanical checks are defined per language. Required security, observability, panic or exception, rate-limit, shutdown, and coverage outcomes remain mandatory, while any new framework or test dependency requires user confirmation.
+- Language guidance uses progressive disclosure: read the small shared router, then only the selected JavaScript/TypeScript, Go, Python, or Rust profile. Polyglot changes load only the languages they modify.
 - Memory and resource leaks are release-blocking. Long-lived resources require explicit ownership, bounded retention, cleanup, repeated-lifecycle verification, and operational memory signals.
 - OpenTelemetry is mandatory for telemetry; OpenObserve is preferred as the backend.
 - Ordinary runtime errors are contained at their boundary. The process exits loudly when required infrastructure or a process invariant makes safe operation impossible.

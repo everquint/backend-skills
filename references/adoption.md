@@ -15,7 +15,7 @@ Make the first commit a coherent project initialization. Do not create an empty 
 Apply the standard from that project-initialization commit:
 
 1. Initialize every project and package at `0.0.0`.
-2. Create only the required application modules under the selected language's source root. Keep shared tests under root `tests` and image definitions under root `dockerfiles`. For TypeScript and Rust, first run the single-package versus workspace decision in [language-profiles.md](language-profiles.md) and use the pnpm- or Cargo-native layout when multiple independently deployable services are planned. Create root `debug` and `docs` only as needed. Create root `terraform` only when infrastructure as code is actually required, using Terraform or OpenTofu as defined in [deployment.md](deployment.md).
+2. Create only the required application modules under the selected language's source root. Keep shared tests under root `tests` and image definitions under root `dockerfiles`. For TypeScript and Rust, use the router in [language-profiles.md](language-profiles.md) to load only the selected profile, then run its single-package versus workspace decision. Create root `debug` and `docs` only as needed. Create root `terraform` only when infrastructure as code is actually required, using Terraform or OpenTofu as defined in [deployment.md](deployment.md).
 3. Establish the dependency direction from [architecture.md](architecture.md) before implementing the first feature.
 4. Configure the formatter, linter, type or static checker, tests, overall coverage, architecture checks, and secret scanning before authored production code grows around missing gates.
 5. Add documentation navigation, an ADR directory, and the changelog mechanism described in [documentation.md](documentation.md).
@@ -47,7 +47,7 @@ Use the language ecosystem's maintained, widely adopted tools unless an explicit
 
 - JavaScript and TypeScript: Oxlint is mandatory for linting. Use a compatible formatter and type checker appropriate to the runtime.
 - Go: use `gofmt` and `go vet`; add a maintained aggregate linter only for rules not covered reliably by the standard toolchain.
-- Rust: use Cargo-native project structure and the required Rust profile in [language-profiles.md](language-profiles.md).
+- Rust: use Cargo-native project structure and the required [Rust profile](language-rust.md).
 - Python, Java, Kotlin, C#, and other languages: select the established formatter, static analyzer, test runner, and coverage reporter for the actual build system and pinned language version.
 
 Verify capabilities against the pinned version. Tool names alone do not prove that type-aware analysis, branch coverage, architecture rules, or generated-code exclusions are active.
