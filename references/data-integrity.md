@@ -5,6 +5,7 @@
 - Ownership and transactions
 - Concurrency
 - Schema and migrations
+- Identifiers and time
 - Query performance
 - Retention and deletion
 - Backups and restoration
@@ -38,6 +39,15 @@
 - Make backfills resumable, idempotent, observable, bounded in batches, and safe under concurrent writes.
 - Create large indexes and constraints using the database's online or non-blocking mechanism where available.
 - Review data loss, lock duration, table rewrites, replica lag, storage growth, and application-version compatibility before production execution.
+
+## Identifiers and time
+
+- Prefer ULID for new application-owned identifiers when no user decision is available because it is unique, compact, readable, and time-sortable. In an interactive task, explain the choice and let the user override it.
+- Use UUID when a database, protocol, provider, interoperability requirement, or existing domain standard expects the widely adopted UUID format. Select the UUID version for the need: use a random version when order must reveal nothing, or a time-ordered version when locality and sortable creation order are intentional.
+- Never treat a UUID or ULID as authentication, authorization, or an unguessable secret. Apply normal access control and avoid exposing identifiers whose embedded time or ordering leaks unacceptable information.
+- Store and transmit all timestamps in UTC. Use timezone-aware values and an unambiguous standard representation such as RFC 3339 at protocol boundaries; never persist naive local timestamps.
+- Convert UTC timestamps to a user's display timezone only at the presentation boundary. Preserve the original zone separately only when the business meaning requires it, such as a future appointment tied to a named local timezone.
+- Represent durations as durations rather than wall-clock timestamps, and use a monotonic clock for elapsed-time measurement where the language supports it.
 
 ## Query performance
 

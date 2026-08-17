@@ -4,6 +4,7 @@
 
 - Authorization and isolation
 - Authentication defaults
+- REST and gRPC authentication decision
 - Multi-tenant isolation
 - User-managed secrets
 - Database storage exception
@@ -16,7 +17,7 @@
 ## Authorization and isolation
 
 - Deny by default and grant the minimum required permission.
-- Authenticate at the REST, MCP, or workflow boundary.
+- Authenticate at the REST, gRPC, MCP, or workflow boundary.
 - Perform authoritative authorization again inside `logic` immediately before sensitive reads, writes, or secret retrieval.
 - Verify the current principal, tenant, ownership, role, action, and target resource using trusted server-side data.
 - Never trust caller-supplied identity, tenant, ownership, or role claims without verified token context.
@@ -25,12 +26,21 @@
 
 ## Authentication defaults
 
-- Require authentication by default for every REST route, MCP operation, workflow trigger, webhook, event consumer, job, and CLI operation.
-- Permit anonymous access only through an explicit public allowlist reviewed with the API contract. Mark public REST operations explicitly in OpenAPI instead of inferring them from missing middleware.
-- Apply authentication centrally so a newly added route cannot become public by omission. Route-level code may make access stricter, never silently weaker.
-- Keep public health or discovery responses minimal. A public route must not expose tenant data, user-specific state, secrets, internal topology, or protected mutations.
+- Require authentication by default for every REST route, gRPC method, MCP operation, workflow trigger, webhook, event consumer, job, and CLI operation.
+- Permit anonymous access only through an explicit public allowlist reviewed with the API contract. Mark public REST operations explicitly in OpenAPI and public gRPC methods in the canonical reviewed policy instead of inferring them from missing middleware or interceptors.
+- Apply authentication centrally so a newly added route or RPC cannot become public by omission. Operation-level code may make access stricter, never silently weaker.
+- Keep public health or discovery responses minimal. A public operation must not expose tenant data, user-specific state, secrets, internal topology, or protected mutations.
 - Treat signed webhooks, service credentials, mTLS identities, and queue identities as authenticated machine principals, not as public traffic.
 - Test that every non-public operation rejects missing, malformed, expired, revoked, and wrong-audience credentials.
+
+## REST and gRPC authentication decision
+
+- For browser-based web applications, prefer an opaque server-managed session carried in a `Secure`, `HttpOnly`, intentionally scoped `SameSite` cookie. Apply CSRF protection to cookie-authenticated state changes and rotate the session after authentication or privilege changes.
+- For distributed native applications such as mobile and desktop clients, use an individually issued, scoped, expiring, revocable API key or equivalent opaque credential for API access. Store it in the platform keychain or secure credential store and provide rotation and device or session revocation.
+- Never embed one shared application-wide API key in a mobile or desktop binary, package, source tree, or downloadable configuration. Treat a distributed client as unable to keep an embedded shared secret.
+- Acquire user-bound web sessions or native credentials through the passwordless and IdP flows below. An API credential identifies its issued principal or installation; it is not permission to skip user authentication, authorization, tenant isolation, or consent.
+- For service-to-service calls, prefer workload identity or mTLS where available; otherwise use a separately issued scoped service API key stored in the approved secret manager.
+- Apply the same decision to REST and gRPC, using HTTP middleware or gRPC interceptors respectively.
 
 ## Multi-tenant isolation
 
