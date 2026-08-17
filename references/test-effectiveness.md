@@ -65,7 +65,7 @@ Use mutation testing on `logic`, authorization, tenant isolation, money, state t
 ## Flaky tests and isolation
 
 - Make tests deterministic, independent, repeatable, self-validating, and fast at their intended layer.
-- Give each test isolated data and unique identifiers. Do not depend on execution order or residue from another test.
+- Give each test logically isolated data and unique identifiers inside the shared test services. Do not create another container to obtain isolation, and do not depend on execution order or residue from another test.
 - Replace fixed sleeps with an observable condition and a bounded deadline.
 - Do not hide flakes behind unlimited retries. Quarantine only with an owner, linked defect, date, and expiry while the test continues running in a visible non-blocking job.
 - Delete an expired, unowned quarantine rather than preserving a permanently ignored signal.

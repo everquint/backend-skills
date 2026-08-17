@@ -4,6 +4,7 @@
 
 - Required test layers
 - Shared feature contracts
+- Shared containerized infrastructure
 - Coverage gates
 - Layer-specific expectations
 - Verification workflow
@@ -41,6 +42,27 @@ tests/
 - Reuse a feature contract across REST, MCP, and workflows when those consumers expose equivalent behavior.
 - Keep consumer-specific protocol assertions in the consumer suite.
 - Allow test infrastructure to seed or inspect the database through dedicated fixtures; never use that as precedent for production consumer code.
+
+## Shared containerized infrastructure
+
+When integration or E2E tests require real infrastructure, start exactly one shared container for each dependency type required by the complete concurrent test run. This applies to PostgreSQL, Redis or Valkey, Temporal, and equivalent containerized services.
+
+- Never start a separate dependency container per test, suite, test worker, feature, package, worktree, or agent.
+- Use either Redis or Valkey according to the application architecture. Do not start both as interchangeable duplicate caches unless the product genuinely integrates with both.
+- Provision shared containers once in test bootstrap, wait for health once, run migrations or namespace setup through one owner, and tear them down once after the complete run.
+- Configure automatic container libraries in explicit singleton or reuse mode. Do not use a library whose lifecycle can silently create one container per test process or worker.
+- Let parallel agents and worktrees connect to the same shared endpoints. Appoint one infrastructure owner; other agents must not run their own Compose stack or container startup.
+- Keep tests independent through logical isolation inside the shared service: unique PostgreSQL databases or schemas, unique Redis/Valkey key prefixes, and unique Temporal namespaces where supported, task queues, and workflow IDs. Clean up owned state deterministically.
+- An in-process fake or SDK test harness is not another service container. Use it for unit tests when it proves the intended behavior; retain the shared real-service integration path where compatibility matters.
+
+In GitHub Actions, use [`jobs.<job_id>.services`](https://docs.github.com/en/actions/tutorials/use-containerized-services) on a Linux runner:
+
+- Declare one service entry for each required dependency in one integration/E2E job.
+- Run every service-dependent suite in that job. Do not use a job matrix or multiple jobs that each recreate the same PostgreSQL, Redis/Valkey, or Temporal service.
+- Keep lint, formatting, static checks, and unit-only tests in separate jobs without service containers when useful.
+- Pin reviewed service image versions or digests and configure bounded health checks before running migrations or tests.
+- When the job itself runs in a container, connect using the service label as the hostname. When it runs directly on the runner, publish the required ports and connect through `localhost` or the assigned service-port context.
+- Never place production credentials or user secrets in service-container configuration. Use isolated test-only values.
 
 ## Coverage gates
 

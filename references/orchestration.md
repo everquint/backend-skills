@@ -39,6 +39,8 @@ Create the dependency graph before creating worktrees. Separate work into:
 
 Complete and verify foundations before fan-out. Typical foundations include repository bootstrap, runtime configuration, authentication, tenant context, database connection when needed, shared user or identity models, stable domain contracts, migrations required by every slice, and common test infrastructure.
 
+When parallel tasks need containerized test infrastructure, assign one foundation owner to provision the shared PostgreSQL, Redis or Valkey, Temporal, or other required containers once. Record non-secret connection details in the coordination plan and require every worktree to reuse them. Never let each agent or worktree launch its own service stack. Follow [testing.md](testing.md) for logical test isolation and GitHub Actions service containers.
+
 Parallelize only tasks that:
 
 - have no unfinished dependency on each other;

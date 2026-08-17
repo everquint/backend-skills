@@ -22,6 +22,7 @@ Invoke the skill explicitly as `$everquint-backend-skill`, or let the agent sele
 - TypeScript chooses a single package or pnpm workspace based on the confirmed number of independently deployable services; each package compiles its own `src` into generated `dist`. Python and Go do not create that JavaScript output tree. Rust makes the same service-count decision for a single Cargo package or workspace and uses Cargo's generated `target` directory.
 - Authenticate every operation by default. Anonymous access requires an explicit documented public allowlist, and multi-tenant systems must enforce tenant isolation across every data path.
 - Authored backend code requires at least 85% overall coverage across supported metrics, plus meaningful happy-path and failure-path tests for every feature and behavior-bearing public function. Security and explicitly mission-critical controls retain stricter coverage requirements.
+- Container-backed tests share one instance of each required service across the test run; they never create PostgreSQL, Redis/Valkey, or Temporal containers per test, worker, suite, worktree, or agent.
 - OpenTelemetry is mandatory for telemetry; OpenObserve is preferred as the backend.
 - Ordinary runtime errors are contained at their boundary. The process exits loudly when required infrastructure or a process invariant makes safe operation impossible.
 - Secrets, authentication, authorization, supply-chain security, data integrity, and production Temporal behavior are treated as first-class engineering concerns.

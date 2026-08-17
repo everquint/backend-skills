@@ -67,6 +67,7 @@ For a trivial, low-risk task, compress the ceremony while preserving correctness
 - For multi-tenant systems, derive tenant context from verified identity and prevent cross-tenant access in logic, persistence, caches, storage, events, and tests.
 - Require at least 85% overall coverage for authored backend code across every metric the selected tool reliably measures. Retain 100% coverage across reliably measured metrics for authentication, authorization, RBAC, tenant isolation, secret handling, encryption, and explicitly mission-critical controls.
 - Require meaningful happy-path and failure-path tests for every feature and behavior-bearing function regardless of the measured coverage percentage.
+- When tests need containerized PostgreSQL, Redis or Valkey, Temporal, or another service, reuse one shared container per required service for the complete concurrent test run. Never start one per test, suite, worker, feature, worktree, or agent. In GitHub Actions, use job service containers and keep service-dependent suites in one non-matrix job.
 - Never weaken authentication, authorization, tenant isolation, secret handling, tests, lint, or coverage to make an implementation easier.
 
 ## Handle conflicts
