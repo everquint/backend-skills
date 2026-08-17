@@ -53,6 +53,7 @@ Instrument every meaningful request or job across REST, MCP, Temporal workflows 
 - Emit structured logs. Include severity, event name, service identity, environment, trace ID, and span ID through automatic correlation where supported.
 - Record exceptions on the active span and preserve causal context without duplicating the same error at every layer.
 - Define health, readiness, and dependency signals separately from business telemetry.
+- Record bounded process and runtime signals needed to detect leaks, including resident memory, managed heap or live objects, native or external memory where available, garbage-collection behavior, active tasks or goroutines, listeners or handles, and pool saturation. Follow [memory-safety.md](memory-safety.md).
 - Name spans, metrics, and events consistently across protocol consumers that invoke the same logic operation.
 
 Do not make telemetry emission part of a business transaction or correctness path. An exporter outage must not cause an otherwise valid user operation to fail.

@@ -18,6 +18,7 @@ Require tests for every behavior-bearing production module.
 - Put the deepest behavioral coverage around `logic`, the canonical owner of business behavior.
 - Add integration tests for ORM mappings, queries, transactions, relationships, constraints, and migrations against the real database engine or a production-compatible ephemeral instance.
 - Add feature-level end-to-end tests for every delivered feature and supported consumer path.
+- Add repeated lifecycle or soak verification for code that owns long-lived resources or can retain data after a request, job, workflow, connection, subscription, or shutdown. Follow [memory-safety.md](memory-safety.md).
 - Exempt export-only index files from dedicated unit tests because they contain no behavior.
 - Do not count generated or vendored code as authored coverage.
 

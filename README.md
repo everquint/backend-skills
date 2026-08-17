@@ -24,6 +24,7 @@ Invoke the skill explicitly as `$everquint-backend-skill`, or let the agent sele
 - Authored backend code requires at least 85% overall coverage across supported metrics, plus meaningful happy-path and failure-path tests for every feature and behavior-bearing public function. Security and explicitly mission-critical controls retain stricter coverage requirements.
 - Container-backed tests share one instance of each required service across the test run; they never create PostgreSQL, Redis/Valkey, or Temporal containers per test, worker, suite, worktree, or agent.
 - Code explains itself by default; comments exist only for necessary non-obvious intent or constraints. Repository hooks and commit validators stay language-native and require user confirmation before installation.
+- Memory and resource leaks are release-blocking. Long-lived resources require explicit ownership, bounded retention, cleanup, repeated-lifecycle verification, and operational memory signals.
 - OpenTelemetry is mandatory for telemetry; OpenObserve is preferred as the backend.
 - Ordinary runtime errors are contained at their boundary. The process exits loudly when required infrastructure or a process invariant makes safe operation impossible.
 - Secrets, authentication, authorization, supply-chain security, data integrity, and production Temporal behavior are treated as first-class engineering concerns.

@@ -64,6 +64,7 @@ Never call immediate process termination from domain logic. Route fatal decision
 ## Isolation and backpressure
 
 - Bound concurrency, queues, payload sizes, connection pools, and memory used per request or job.
+- Follow [memory-safety.md](memory-safety.md) for ownership, cleanup, bounded retention, leak verification, and language-specific risks.
 - Isolate independent providers or workloads with separate pools or bulkheads when one can starve another.
 - Reject overload explicitly with the protocol's retryable response instead of accepting unbounded work.
 - Preserve fairness between tenants and prevent one tenant from exhausting shared resources.
@@ -79,4 +80,4 @@ Never call immediate process termination from domain logic. Route fatal decision
 
 ## Verification
 
-Test configuration rejection, dependency classification, startup failure, degraded optional dependencies, boundary containment, retry budgets, circuit transitions, overload, readiness changes, graceful shutdown, and fatal exit behavior. Require 100% per-file coverage for authored lifecycle and resilience code.
+Test configuration rejection, dependency classification, startup failure, degraded optional dependencies, boundary containment, retry budgets, circuit transitions, overload, readiness changes, graceful shutdown, resource cleanup, and fatal exit behavior. Require 100% per-file coverage for authored lifecycle and resilience code.
