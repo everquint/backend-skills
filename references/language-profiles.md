@@ -258,14 +258,21 @@ Do not create `project/src` for a Cargo workspace. The workspace root is not an 
 
 Required profile:
 
-- `cargo fmt --check` with rustfmt for formatting.
-- `cargo clippy --all-targets --all-features -- -D warnings` for linting.
-- `cargo test --all-targets --all-features` for the relevant package or the full workspace.
+- `cargo fmt --all -- --check` with rustfmt for formatting.
+- `cargo clippy --workspace --all-targets --all-features -- -D warnings` for linting and static analysis.
+- `cargo test --workspace --all-targets --all-features` for unit, integration, binary, example, and benchmark targets, followed by `cargo test --workspace --doc --all-features` because `--all-targets` does not include documentation tests.
+- `cargo-llvm-cov` for coverage. Run `cargo llvm-cov --workspace --all-features --all-targets --fail-under-lines 85 --fail-under-functions 85 --fail-under-regions 85` for the aggregate gate; do not mandate its unstable branch mode. Maintain `quality/rust-critical-coverage.toml` as the versioned manifest of authentication, authorization, RBAC, tenant-isolation, secret-handling, encryption, and explicitly mission-critical Rust source files. Generate the JSON report and use a deterministic repository-owned checker that fails when a manifest file is absent or below 100% lines, functions, or regions.
+- `cargo-mutants` for mutation testing. Run changed or focused modules in pull requests and the full workspace on a schedule. Permit no surviving non-equivalent mutant in security or explicitly mission-critical code.
+- `cargo-deny` as the single dependency-policy owner for advisories, licenses, bans, duplicate versions, and sources. Do not add `cargo-audit` for the same advisory concern unless a documented gap justifies the duplicate gate.
+- `proptest` for invariant-heavy property tests, including serialization, pagination, identifiers, permission matrices, and state machines.
+- `cargo-fuzz` for parsers, codecs, URLs, payload guards, file handling, and other untrusted-input boundaries. Pin its required nightly toolchain and run bounded CI or scheduled fuzz jobs appropriate to the risk.
+- Miri for code containing `unsafe`, FFI, custom allocation, raw pointers, interior-mutability invariants, or concurrency whose undefined behavior Miri can exercise. Pin a compatible nightly toolchain and run the supported focused tests with `cargo miri test`; disclose unsupported paths instead of treating a skipped Miri run as success.
 - Pin the Rust toolchain and commit `Cargo.lock` for deployable applications and workspaces.
 - Follow Rust naming conventions throughout authored Rust code. Use `snake_case` for modules, source filenames, functions, methods, struct fields, and local variables; `UpperCamelCase` for structs, enums, enum variants, traits, and type parameters; and `SCREAMING_SNAKE_CASE` for constants and statics. Use `snake_case!` for macro names and short lowercase names for lifetimes.
 - Do not translate Rust identifiers to Ever Quint camelCase. Keep externally prescribed casing at serialization and protocol boundaries, mapping it explicitly to idiomatic Rust identifiers.
 - Use structs, impl blocks, traits, and associated functions to preserve the OOP domain model without imitating class inheritance.
-- Use a maintained Rust coverage tool and enforce every metric it actually supports; apply the coverage-honesty rules below.
+- Put exactly one authored struct in each Rust source file and keep all of that struct's inherent and trait `impl` blocks in the same file. Do not scatter one struct's implementation across files or place multiple authored structs in one file; generated code is exempt.
+- Treat the 85% overall and 100% security or mission-critical Rust coverage gates as mandatory project standards. Do not ask whether to enforce them or lower them to accommodate existing code.
 - Use Cocogitto for commit-message validation with `cog verify` and `cog check`.
 - [`husky-rs`](https://docs.rs/husky-rs/latest/husky_rs/) as the Rust-native Git-hook manager candidate.
 
@@ -282,5 +289,5 @@ The general requirement is at least 85% overall execution coverage for every met
 
 - JavaScript/TypeScript and Python must mechanically gate all four dimensions overall and apply control-specific thresholds where required.
 - Go's standard coverage is statement-oriented. Gate at least 85% overall statement coverage, require happy-path and meaningful failure-path tests for every feature and behavior-bearing public function, and use mutation testing plus review to expose weak assertions.
-- Rust coverage capabilities vary by toolchain and coverage tool. Gate at least 85% overall for every supported metric, require happy-path and meaningful failure-path tests for every feature and behavior-bearing public function, and use mutation testing plus review rather than relabeling unsupported metrics.
+- Rust uses `cargo-llvm-cov` and mechanically gates workspace-aggregate line, function, and region coverage at 85%. It separately gates the versioned security and mission-critical file manifest at 100% for those same metrics. Branch coverage remains outside the mandatory Rust gate while the tool labels it unstable. Do not count tests, generated code, vendored code, or compiler-generated regions as authored production coverage; never exclude authored production code merely to pass. Require happy-path and meaningful failure-path tests for every feature and behavior-bearing public function, then use `cargo-mutants` to expose weak assertions.
 - Report tool limitations openly. A renamed or unsupported metric never satisfies the requirement.

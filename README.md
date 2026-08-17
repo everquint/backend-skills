@@ -22,6 +22,7 @@ Invoke the skill explicitly as `$everquint-backend-skill`, or let the agent sele
 - TypeScript chooses a single package or pnpm workspace based on the confirmed number of independently deployable services; each package compiles its own `src` into generated `dist`. Python and Go do not create that JavaScript output tree. Rust makes the same service-count decision for a single Cargo package or workspace and uses Cargo's generated `target` directory.
 - Non-trivial Rust work consults task-relevant stable Rust Book chapters and selectively applies `rust-skills`; the pinned toolchain and official Rust documentation remain authoritative.
 - In non-interactive Rust work, an unclear layout defaults to a Cargo workspace monorepo and records the assumption for review.
+- Rust keeps exactly one authored struct and all of its `impl` blocks in one source file. Its required profile uses rustfmt, Clippy, Cargo tests plus doctests, `cargo-llvm-cov`, `cargo-mutants`, `cargo-deny`, Proptest, cargo-fuzz, and Miri where applicable.
 - Web applications use secure cookie sessions; native mobile and desktop applications use individually issued API credentials, never a shared key embedded in a distributed client.
 - New application-owned identifiers default to ULID in non-interactive work, UUID remains available for interoperability or version-specific needs, and all stored or transmitted timestamps use UTC.
 - Local external dependencies use one shared root Docker Compose stack. Infrastructure as code is created only when required and uses Terraform or OpenTofu.
@@ -29,6 +30,7 @@ Invoke the skill explicitly as `$everquint-backend-skill`, or let the agent sele
 - Authored backend code requires at least 85% overall coverage across supported metrics, plus meaningful happy-path and failure-path tests for every feature and behavior-bearing public function. Security and explicitly mission-critical controls retain stricter coverage requirements.
 - Container-backed tests share one instance of each required service across the test run; they never create PostgreSQL, Redis/Valkey, or Temporal containers per test, worker, suite, worktree, or agent.
 - Code explains itself by default; comments exist only for necessary non-obvious intent or constraints. Repository hooks and commit validators stay language-native and require user confirmation before installation.
+- Strong mechanical checks are defined per language. Required security, observability, panic or exception, rate-limit, shutdown, and coverage outcomes remain mandatory, while any new framework or test dependency requires user confirmation.
 - Memory and resource leaks are release-blocking. Long-lived resources require explicit ownership, bounded retention, cleanup, repeated-lifecycle verification, and operational memory signals.
 - OpenTelemetry is mandatory for telemetry; OpenObserve is preferred as the backend.
 - Ordinary runtime errors are contained at their boundary. The process exits loudly when required infrastructure or a process invariant makes safe operation impossible.
