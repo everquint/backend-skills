@@ -39,6 +39,8 @@ Build backend changes around a single object-oriented business-logic core. Treat
 
 ## Execute the work
 
+Use functionality-first sequencing by default: establish the smallest working vertical slice, then complete the tests, security audit, and compliance gates before final delivery. For a defect, reproduce the failure first when practical. If the user explicitly requests test-driven development or the repository's own instructions mandate it, use red-green-refactor instead. Treat explicit invocation of a TDD skill as a TDD request. If simultaneously applicable instructions require incompatible sequences and neither has clear precedence, surface the conflict and ask before implementation. Workflow order never permits deferring a safeguard whose absence could expose secrets or tenant data, bypass authorization, corrupt data, or perform an unsafe destructive action.
+
 1. Inspect repository instructions, architecture, conventions, dependencies, tests, and the working-tree state.
 2. Separate repository facts from Ever Quint standards. Measure the former; enforce the latter. Never weaken a standard merely because existing code violates it.
 3. Resolve dependency behavior from the installed version or primary documentation, and probe uncertain runtime behavior before designing around it.

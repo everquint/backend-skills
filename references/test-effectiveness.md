@@ -24,7 +24,7 @@ Coverage proves that code executed; it does not prove that a test would detect w
 ## Test-driven changes
 
 - For a defect, write the smallest test that reproduces it and confirm it fails for the expected reason before changing implementation.
-- For new behavior, get the smallest vertical slice working first, then add success and meaningful failure tests during the compliance pass. Do not let the later test phase change the intended contract silently.
+- For new behavior, get the smallest vertical slice working first, then add success and meaningful failure tests during the compliance pass. When the user explicitly requests TDD or repository instructions mandate it, write the smallest failing test first and follow red-green-refactor instead. Do not let either sequence change the intended contract silently.
 - Run the focused test while iterating, then the relevant unit, integration, feature E2E, coverage, mutation, and static gates.
 - Never weaken, delete, skip, or over-mock a valid test merely to make a change pass.
 - When a test must change because the contract changed, make the contract change explicit in documentation and review.

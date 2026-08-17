@@ -20,7 +20,7 @@ debug/
 │   ├── swagger-server.ts
 │   └── index.ts
 ├── grpc/
-│   ├── grpc-inspector.ts
+│   ├── grpc-inspection-launcher.ts
 │   └── index.ts
 ├── mcp/
 │   ├── mcp-inspector.ts

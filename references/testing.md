@@ -140,7 +140,7 @@ Apply the gate to all authored backend layers, including:
 
 ## Verification workflow
 
-1. Implement the smallest working vertical slice and verify the primary behavior directly. For a defect, reproduce the failure first when practical.
+1. By default, implement the smallest working vertical slice and verify the primary behavior directly. If the user explicitly requests TDD or repository instructions mandate it, begin with the smallest failing test and use red-green-refactor. For a defect, reproduce the failure first when practical under either sequence.
 2. Tell the user the functionality is ready for their testing and that the compliance pass is continuing while they review.
 3. Add or complete happy-path and meaningful failure-path tests for every changed feature and behavior-bearing public function.
 4. Run unit, integration, and feature E2E suites relevant to the change.

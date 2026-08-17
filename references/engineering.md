@@ -53,7 +53,7 @@ Convert work into verifiable outcomes:
 
 - Define success before implementation.
 - Reproduce a reported bug before fixing it.
-- Prioritize a working vertical slice before spending time on broad audit, coverage, or compliance work.
+- Prioritize a working vertical slice before spending time on broad audit, coverage, or compliance work unless the user explicitly requests TDD or the repository's own instructions mandate red-green-refactor.
 - Do not defer a minimum safeguard when its absence could expose secrets or tenant data, bypass authorization, corrupt data, or perform an unsafe destructive action.
 - Keep multi-step work incremental and independently verifiable.
 - Loop until the defined checks pass; do not stop at “looks correct.”
