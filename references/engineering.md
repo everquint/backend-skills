@@ -109,7 +109,12 @@ Apply SOLID, DRY, and KISS pragmatically:
 
 ## Comments and errors
 
-- Write comments to explain intent, constraints, risk, or non-obvious decisions; do not narrate readable code.
+- Make code self-explanatory through precise names, explicit types, focused units, and straightforward control flow. Refactor unclear code before adding an explanatory comment.
+- Add a comment only when required to preserve non-obvious intent, an invariant, an external compatibility constraint, a security boundary, a deliberate workaround, or a decision that cannot be made clear safely through code.
+- Write comments about why the code must behave that way, not what a readable statement already does. Never repeat identifiers, signatures, types, or control flow in prose.
+- Allow a necessary comment around measured performance-sensitive code when the clearer implementation would materially regress the verified requirement. State the constraint, the reason the simpler form was rejected, and the invariant that future changes must preserve; keep benchmark or profiling evidence in the review or linked documentation.
+- Do not use performance as a speculative excuse for obscure code. Measure first, keep the smallest justified optimization, and test its behavior.
+- Delete obsolete and commented-out code instead of preserving it in comments. Keep every remaining comment accurate when behavior changes.
 - Document public APIs using the language's established convention when the contract is not self-evident.
 - Represent expected business failures as explicit logic-layer errors.
 - Never swallow exceptions silently.

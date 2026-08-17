@@ -68,6 +68,8 @@ For a trivial, low-risk task, compress the ceremony while preserving correctness
 - Require at least 85% overall coverage for authored backend code across every metric the selected tool reliably measures. Retain 100% coverage across reliably measured metrics for authentication, authorization, RBAC, tenant isolation, secret handling, encryption, and explicitly mission-critical controls.
 - Require meaningful happy-path and failure-path tests for every feature and behavior-bearing function regardless of the measured coverage percentage.
 - When tests need containerized PostgreSQL, Redis or Valkey, Temporal, or another service, reuse one shared container per required service for the complete concurrent test run. Never start one per test, suite, worker, feature, worktree, or agent. In GitHub Actions, use job service containers and keep service-dependent suites in one non-matrix job.
+- Make authored code self-explanatory through names, types, structure, and focused units. Add comments only for necessary non-obvious intent, constraints, invariants, or measured performance tradeoffs; never narrate readable code.
+- Keep repository tooling native to the project's language. Propose and obtain user confirmation for the hook manager and validator before installation; never add Node packages to a non-Node repository merely for hooks or commit linting. If no credible native equivalent exists, disclose that and offer to use plain Git hooks or skip the local gate.
 - Never weaken authentication, authorization, tenant isolation, secret handling, tests, lint, or coverage to make an implementation easier.
 
 ## Handle conflicts

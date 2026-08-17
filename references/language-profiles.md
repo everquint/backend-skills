@@ -16,7 +16,9 @@
 - Run formatting, linting, static or type checks, tests, architecture checks, and coverage locally and in CI with warnings treated as failures.
 - Use four spaces unless the language formatter requires otherwise; Go uses `gofmt` tabs.
 - Preserve Ever Quint naming where the language profile does not override it: classes or class-equivalent exported types in PascalCase and application identifiers in camelCase. Language-native profiles, including Rust, take precedence.
-- Use the language profile's Conventional Commits validator locally and in CI. Pin it through the repository's existing toolchain; do not introduce another language runtime solely for commit linting.
+- Keep hook management and commit validation separate. Before adding either, show the user the maintained language-native candidates, exact versions or pinning strategy, and commands, then wait for confirmation. Do not infer approval from this candidate list.
+- Use the confirmed language-native Conventional Commits validator locally and in CI. Pin it through the repository's existing toolchain; do not introduce another language runtime solely for hooks or commit linting.
+- If no maintained native hook manager meets the requirement, disclose the search and offer plain versioned Git hooks or skipping the local hook. If no maintained native validator exists, offer explicitly skipping commit-message validation. Record an approved skip and do not claim the omitted gate as installed or enforced. Add a cross-language toolchain only with explicit user approval.
 - Add no second tool that owns the same concern without a documented gap and ADR.
 
 ## JavaScript and TypeScript
@@ -114,6 +116,7 @@ Required profile:
 - V8 coverage through Vitest with at least 85% overall lines, branches, functions, and statements, plus the stricter security thresholds from [testing.md](testing.md).
 - Stryker for mutation testing of logic, security, money, state transitions, and other mission-critical code.
 - `@commitlint/cli` with `@commitlint/config-conventional` for commit-message validation.
+- [Husky](https://typicode.github.io/husky/) as the JavaScript/TypeScript-native Git-hook manager candidate.
 
 - Pin Node and the package manager and commit the lockfile.
 - Use ESM unless the selected runtime or framework requires CommonJS.
@@ -134,6 +137,7 @@ Required profile:
 - Built-in fuzzing for parsers, codecs, URLs, payload guards, and other untrusted boundaries.
 - The approved vulnerability scanner for the resolved Go module graph.
 - The Go `github.com/conventionalcommit/commitlint` tool for commit-message validation.
+- [Lefthook](https://lefthook.dev/) installed through Go tooling as the Go-native Git-hook manager candidate.
 
 - Commit `go.mod` and `go.sum`; pin the Go toolchain version.
 - Use named receiver types to preserve the OOP logic model. Stateless collection types carry no fields; identity-bound singular types carry their identifier or context.
@@ -154,6 +158,7 @@ Required profile:
 - Hypothesis for property-based tests of parsers, serialization, pagination, idempotency, permission matrices, and other invariant-heavy logic.
 - The approved vulnerability scanner for the locked Python dependency graph.
 - Commitizen for commit-message validation with `cz check`.
+- [pre-commit](https://pre-commit.com/) as the Python-native Git-hook manager candidate. Configure it to invoke the confirmed Python toolchain; do not let a Python-only repository bootstrap Node hooks.
 
 - Pin the Python version and use a locked, hash-verifiable dependency resolution appropriate to the selected package manager.
 - Use lowercase snake_case for importable `.py` module filenames because hyphens are invalid identifiers.
@@ -242,6 +247,7 @@ Required profile:
 - Use structs, impl blocks, traits, and associated functions to preserve the OOP domain model without imitating class inheritance.
 - Use a maintained Rust coverage tool and enforce every metric it actually supports; apply the coverage-honesty rules below.
 - Use Cocogitto for commit-message validation with `cog verify` and `cog check`.
+- [`husky-rs`](https://docs.rs/husky-rs/latest/husky_rs/) as the Rust-native Git-hook manager candidate.
 
 Cargo references:
 
