@@ -32,7 +32,7 @@ Build backend changes around a single object-oriented business-logic core. Treat
 - Read [deployment.md](references/deployment.md) only when the user explicitly asks for Terraform or the task changes an existing root `terraform` tree. Do not infer or scaffold Terraform from a general backend or deployment request.
 - Read [test-effectiveness.md](references/test-effectiveness.md) for every behavior-bearing change and when reviewing whether tests genuinely detect defects beyond achieving coverage.
 - Read [temporal.md](references/temporal.md) when creating or changing production Temporal workflows, activities, workers, payloads, histories, retries, signals, updates, versioning, or deployments.
-- Read [language-profiles.md](references/language-profiles.md) when initializing or changing JavaScript/TypeScript, Go, Python, or Rust tooling, project layout, formatting, linting, static analysis, testing, coverage, or filenames.
+- Read [language-profiles.md](references/language-profiles.md) when initializing or changing JavaScript/TypeScript, Go, Python, or Rust tooling, project layout, formatting, linting, static analysis, testing, coverage, or filenames. For non-trivial Rust implementation or review, also follow its stable Rust Book and `rust-skills` prerequisites.
 - Read [documentation.md](references/documentation.md) when creating or changing documentation, architecture decisions, public contracts, or notable behavior.
 - Read [release.md](references/release.md) when initializing versions, tagging releases, publishing packages, or building and publishing Docker images.
 

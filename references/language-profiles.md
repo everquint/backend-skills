@@ -177,6 +177,17 @@ Before scaffolding a Rust backend, ask the user:
 - If the answer is unclear, explain the two layouts and wait for confirmation. Do not choose silently.
 - Do not create a workspace merely for tests, examples, debug runners, internal modules, or hypothetical future services.
 
+### Rust guidance prerequisites
+
+Before implementing or reviewing non-trivial Rust:
+
+1. Resolve the repository's pinned Rust toolchain, edition, and minimum supported Rust version when one is declared.
+2. Consult only the task-relevant chapters of the [stable Rust Book](https://doc.rust-lang.org/stable/book/index.html). Use the pinned compiler's behavior, the Rust Reference, standard-library documentation, and other official Rust documentation to settle language or toolchain questions.
+3. Use the [`rust-skills`](https://github.com/leonardomso/rust-skills) skill when it is available. Read its index, then load only the rule categories relevant to the task, such as ownership, error handling, memory, unsafe code, async, concurrency, performance, project structure, linting, or testing.
+4. Treat `rust-skills` as supplementary community guidance. If it conflicts with the pinned toolchain or official Rust documentation, verify the behavior and follow the official source.
+5. Do not install, clone, or update `rust-skills` without user confirmation. If it is unavailable, say that it could not be applied and ask whether the user wants it installed or supplied; never claim it was used.
+6. Apply all tool and dependency recommendations from `rust-skills` through this skill's existing confirmation, architecture, security, and simplicity rules. Do not adopt a recommendation blindly when it conflicts with the repository's requirements.
+
 Use this single-package layout for a REST-only backend:
 
 ```text
@@ -251,6 +262,7 @@ Required profile:
 
 Cargo references:
 
+- Rust Book: https://doc.rust-lang.org/stable/book/index.html
 - Package layout: https://doc.rust-lang.org/cargo/guide/project-layout.html
 - Workspaces: https://doc.rust-lang.org/cargo/reference/workspaces.html
 - Build output and cache: https://doc.rust-lang.org/cargo/reference/build-cache.html
